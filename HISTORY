@@ -1,0 +1,49 @@
+'w_scan_cpp' History
+----------------------------------------
+
+20201224:
+-------------------------------------------------------------------------------
+* Initial Version.
+
+20210218:
+-------------------------------------------------------------------------------
+* add missing HISTORY file
+* checked function @ vdr-2.5.1: ok
+* Makefile
+  - target 'mrproper' now phony target.
+  - target 'dist' calls now mrproper and clean
+  - fix 'dist' target - 20201224 tarball was broken, all files without folder.
+* remove fribidi from list of requirements. Not in use.
+* w_scan_cpp now reports it's program version on start.
+* update wirbelscan version to 2021.02.18
+  - probably you want to call 'make mrproper' and 'make download'
+* give satip 3 secs extra time to detect devices. Sometimes the satip plugin
+  gave up too fast while reporting 'ready'. As a consequence, no devices
+  were found.
+
+20210331:
+-------------------------------------------------------------------------------
+* main.cpp
+   - print number of services and scan time after scan.
+   - move wait time for satip after WaitForAllDevicesReady
+* Helper.{cpp,h}
+   - IntToStr
+   - IntToHex
+* OutputFormats.cpp
+   - ini Format, sort list by UniqueTransponders to remove duplicates.
+* Satellites.{cpp,h}
+   - std::string GetSatelliteIdValue(int Id)
+* Makefile
+   - new Makefile, take care of INSTALLDIR and prefix
+   - replace $(PWD) by $(shell pwd) for debian/ubuntu packages
+   - new targets
+      - $(pluginsrcdir)/satip/satip.h (skip header if already there)
+      - printvars (debug - may be useful before make install)
+   - shorten compile messages for readability
+   - update to wirbelscan-2021.03.07, which
+      - adds some DVB-C freqs
+      - skips second DVB-C loop, if QAM_AUTO support
+* README
+   - add package hints for debian/ubuntu
+   - add hint, how to install in /usr: make prefix=/usr install
+   - Update satip upstream address to github

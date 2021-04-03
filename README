@@ -1,0 +1,207 @@
+This is w_scan_cpp - a dtv channel scanner based on VDR (www.tvdr.de) and
+it's Plugins.
+
+
+Written by:                  Winfried Koehler <nvdec A.T. quantentunnel D.O.T. de >
+Project's homepage:          https://www.gen2vdr.de/wirbel/w_scan_cpp/index2.html
+Latest version available at: https://www.gen2vdr.de/wirbel
+License:                     GPL v2
+
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 2 as
+published by the Free Software Foundation.
+See the file COPYING for more information.
+
+
+
+It uses (and therefore links to and includes part of)
+   1. VDR (www.tvdr.de) by Klaus Schmidinger as VDR Plugin framework
+
+   2. the VDR satip Plugin ( https://github.com/rofafor/vdr-plugin-satip )
+      by Rolf Ahrenberg for the SAT>IP support
+
+   3. my VDR wirbelscan Plugin from
+      https://www.gen2vdr.de/wirbel/wirbelscan/index2.html
+      as the actual 'DTV channel scanner' itself.
+
+NOTE:
+As all of the related third party code is GPL v2, w_scan_cpp is also GPL v2.
+
+NOTE:
+The third party code needed to compile this tool is not delivered in this
+source package, see chapter 1.
+
+
+--------------------------------------------------------------------------------
+0. Requirements
+--------------------------------------------------------------------------------
+
+- GCC with c++11 support
+- fontconfig
+- freetype2
+- gettext
+- libcap
+- libjpeg
+- Libcurl >= 7.36.0
+- PugiXML
+- Glibc >= 2.12
+- wget
+- GNU sed
+- git
+- internet connection for command 'make download'
+
+
+debian/ubuntu users, the package names are
+------------------------------------------
+ - linux-libc-dev
+ - libfreetype6-dev
+ - libfontconfig1-dev
+ - libcurl4-openssl-dev
+ - git 
+ - libjpeg-dev
+ - libpugixml-dev
+ - libcap-dev
+ - ca-certificates
+
+for example:
+  # apt-get install linux-libc-dev libfreetype6-dev libfontconfig1-dev 
+    libcurl4-openssl-dev git wget libjpeg-dev libpugixml-dev libcap-dev 
+    ca-certificates
+
+
+--------------------------------------------------------------------------------
+1. Get needed additional sources from third parties.
+--------------------------------------------------------------------------------
+
+   make download
+
+
+
+
+NOTE:
+This step needs to be done only once - except if you want newer versions of the
+third parties source code. If so - run 'make mrproper' and start over again from
+scratch. There is also a downlodable tarball with the third-party stuff avai-
+lable, however i recommend to use the newest code downloaded by this command.
+ 
+
+NOTE:
+Chapter 1. assumes that you have *write permissions to this source directory* and
+permissions to run certain shell commands, as GNU sed, wget, git, make...
+
+
+
+--------------------------------------------------------------------------------
+2. Compile this tool.
+--------------------------------------------------------------------------------
+Just run in top folder
+
+make
+
+
+NOTE:
+You may increase the compile speed, if you use 'make -jN', with 'N' as the number
+of cpu cores. I use normally 'make -j8'
+
+NOTE:
+The generated binary is quite large, you may want to strip the tool from debug
+symbols. However, if you do, you are not able to debug it.
+
+
+--------------------------------------------------------------------------------
+2.1. Optional: Install this tool.
+--------------------------------------------------------------------------------
+to install with prefix=/usr/local, type
+
+make install
+
+
+
+or, specify a different prefix, i.e. /usr
+
+make prefix=/usr install
+
+
+
+You may also give DESTDIR variable, i.e.
+make DESTDIR=/tmp prefix=/usr install
+
+
+
+NOTE: This command requires write permissions.
+
+
+--------------------------------------------------------------------------------
+3. Usage
+--------------------------------------------------------------------------------
+
+The most important command line option is -f for choosing the frontend type,
+choose one of the following:
+
+       -f type, --frontend type
+               What programs do you want to search for?
+               a = atsc (vsb/qam)
+               c = cable
+               s = sat
+               t = terrestrial [default]
+
+In case of a satellite search, you need additionally the -s flag for choice
+of satellite, ie. -s -S19E2. Use -s? for the list of known satellites.
+
+If you choose cable, terrestrial or VSB, you should specify your country
+with the -c flag, ie. -cDE for Germany. Use -c? for the list of known countries.
+
+
+If you want an output format other than VDR (http://www.tvdr.de), you need to
+apply also one of the output switches:
+
+       -L, --output-VLC
+               generate VLC xspf playlist (experimental)
+       -M, --output-mplayer
+               mplayer output instead of vdr channels.conf
+       -X, --output-xine
+               tzap/czap/xine output instead of vdr channels.conf
+       -x, --output-initial
+               generate dtv scan table for dvbv5-scan
+       -Z, --output-xml
+               generate w_scan XML tuning data
+       -Y <FILENAME>, --output-dat <FILENAME>
+               generate channels.dat for SAT>IP DvbViewer Lite
+
+
+
+Please note, that not all command line switches are working together,
+try yourselves.
+
+The basic commandline help is called by
+     w_scan_cpp -h
+
+and the complete help with DiSEqC switches or rotors, SCR, (..) with
+     w_scan_cpp -H
+
+--------------------------------------------------------------------------------
+3.1 Examples
+--------------------------------------------------------------------------------
+- DVB-T/T2 with output=VDR and country=Germany
+     w_scan_cpp -ft -cDE
+
+- DVB-S/S2 with output=VDR and satellite 19.2 east Astra 1KR/1L/1M/1N
+     w_scan_cpp -fs -sS19E2
+
+- as above, but output to DTV scan tables for dvbv5-scan
+     w_scan_cpp -fs -sS19E2 -x
+
+- now also using SAT>IP, instead of local DVB hardware
+     w_scan_cpp -fs -sS19E2 -x --satip
+
+- DVB-S/S2 with VLC player config
+     w_scan_cpp -fs -sS19E2 -L
+
+
+
+
+
+
+have phun,
+Winfried
