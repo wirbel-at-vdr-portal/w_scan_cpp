@@ -47,3 +47,8 @@
    - add package hints for debian/ubuntu
    - add hint, how to install in /usr: make prefix=/usr install
    - Update satip upstream address to github
+
+20210512:
+-------------------------------------------------------------------------------
+* OutputFormats.cpp
+   - fix VLC output: Frequencies were rounded incorrectly.
