@@ -143,11 +143,11 @@ localedir = $(datarootdir)/locale
 #------------------------
 # Unix-style man pages 
 mandir = $(datarootdir)/man
-man1dir = $(datarootdir)/man1
-man2dir = $(datarootdir)/man2
-man3dir = $(datarootdir)/man3
-man4dir = $(datarootdir)/man4
-man5dir = $(datarootdir)/man5
+man1dir = $(mandir)/man1
+man2dir = $(mandir)/man2
+man3dir = $(mandir)/man3
+man4dir = $(mandir)/man4
+man5dir = $(mandir)/man5
 
 #------------------------
 # no build outside of sources yet. Sorry.
@@ -257,12 +257,15 @@ endif
 install: all
 	$(MKDIR_P) $(DESTDIR)$(bindir)
 	$(MKDIR_P) $(DESTDIR)$(docdir)
+	$(MKDIR_P) $(DESTDIR)$(man1dir)
 	$(INSTALL_PROGRAM) $(BINARY) $(DESTDIR)$(bindir)
 	$(INSTALL_DATA) COPYING HISTORY README $(DESTDIR)$(docdir)
+	$(INSTALL_DATA) doc/w_scan_cpp.1 $(DESTDIR)$(man1dir)
 
 uninstall:
 	$(RM) -f $(DESTDIR)$(bindir)/$(BINARY)
 	$(RM) -rf $(DESTDIR)$(docdir)
+	$(RM) -f $(DESTDIR)$(man1dir)/w_scan_cpp.1
 
 .PHONY: download
 download: $(vdrdir) $(pluginsrcdir)/satip $(pluginsrcdir)/wirbelscan

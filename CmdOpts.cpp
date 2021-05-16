@@ -394,7 +394,7 @@ bool HelpText(std::string ProgName) {
   ss << "               3 = both, Terrestrial and Cable" << std::endl;
   ss << "       --satip" << std::endl;
   ss << "               use SAT>IP tuner via VDR Satip Plugin" << std::endl;
-  ss << "               see http://www.saunalahti.fi/~rahrenbe/vdr/satip/" << std::endl;
+  ss << "               see https://www.satip.info" << std::endl;
   ss << "       -c, --country" << std::endl;
   ss << "               choose your country here:" << std::endl;
   ss << "                       DE, GB, US, AU, .." << std::endl;

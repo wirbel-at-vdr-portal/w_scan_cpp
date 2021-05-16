@@ -1,0 +1,402 @@
+.\"   IF YOU'RE  WONDERING ABOUT THIS FILE, PLS READ:
+.\"      http://www.schweikhardt.net/man_page_howto.html
+.\"
+.\"   Section The human readable name
+.\"      -> 1    User commands that may be started by everyone.
+.\"      -> 2    System calls, that is, functions provided by the kernel.
+.\"      -> 3    Subroutines, that is, library functions.
+.\"      -> 4    Devices, that is, special files in the /dev directory.
+.\"      -> 5    File format descriptions, e.g. /etc/passwd.
+.\"      -> 6    Games, self-explanatory.
+.\"      -> 7    Miscellaneous, e.g. macro packages, conventions.
+.\"      -> 8    System administration tools that only root can execute.
+.\"      -> 9    Another (Linux specific) place for kernel routine documentation.
+.\"      -> n    (Deprecated) New documentation, that may be moved to a more
+.\"              appropriate section.
+.\"      -> o    (Deprecated) Old documentation, that may be kept for a grace
+.\"              period.
+.\"      -> l    (Deprecated) Local documentation referring to this particular
+.\"              system.
+.\"
+.\"   /**************************************************************************
+.\"    * w_scan_cpp is a command, which might be started by everyone. Also, it's
+.\"    * not related to X or tk or similar.
+.\"    * Therefore, name it 'w_scan_cpp.1' for section 1.
+.\"    *************************************************************************/
+.\"
+.\" The NAME section
+.\" ...is the only required section. Man pages without a name section are as
+.\" useful as refrigerators at the north pole. This section also has a
+.\" standardized format consisting of a comma-separated list of program or
+.\" function names, followed by a dash, followed by a short (usually one line)
+.\" description of the functionality the program (or function, or file) is
+.\" supposed to provide. By means of makewhatis(8), the name sections make it
+.\" into the whatis database files. Makewhatis is the reason the name section
+.\" must exist, and why it must adhere to the format I described.
+.\"
+.\"   /**************************************************************************
+.\"    * NAME
+.\"    *************************************************************************/
+.TH "w_scan_cpp" 1 "16 May 2021" "" ""
+.SH NAME w_scan_cpp \- a universal DTV scanner. It's the successor of w_scan.
+.\"
+.\" The \- is of importance here. The backslash is needed to make the dash
+.\" distinct from a hyphenation dash that may appear in either the command name
+.\" or the one line description.
+.\"
+.\"   /**************************************************************************
+.\"    * SYNOPSIS
+.\"    *************************************************************************/
+.\" ...is intended to give a short overview on available program options. For
+.\" functions this sections lists corresponding include files and the prototype
+.\" so the programmer knows the type and number of arguments as well as the
+.\" return type.
+.\" 
+.SH SYNOPSIS
+.B w_scan_cpp -fa
+.I -c \<COUNTRY_ID\> 
+.B [ options ] 
+.br
+.B w_scan_cpp -fc
+.I -c \<COUNTRY_ID\> 
+.B [ options ] 
+.br
+.B w_scan_cpp -ft
+.I -c \<COUNTRY_ID\> 
+.B [ options ] 
+.br
+.B w_scan_cpp -fs
+.I -s \<SATELLITE_ID\> 
+.B [ options ]
+.\"
+.\"   /**************************************************************************
+.\"    * DESCRIPTION
+.\"    *************************************************************************/
+.\" ...eloquently explains why your sequence of 0s and 1s is worth anything at
+.\" all. Here is where you write down all your knowledge. This is the
+.\" Hall Of Fame. Win other programmers' and users' admiration by making this
+.\" section the source of reliable and detailed information. Explain what the
+.\" arguments are for, the file format, what algorithms do the dirty jobs.
+.\"
+.SH "DESCRIPTION"
+.B w_scan_cpp
+\."                                                              |
+scans for DVB\-C, DVB\-S/S2, DVB\-T/T2 and ATSC channels,
+.br
+or, let's call it digital TV and Radio services.
+.br
+During a scan, this utility writes commands to your DTV hardware
+.br
+and reads data from it.
+.br
+Therefore, any other program accessing the DVB hardware
+.br
+with write access (like e.g. VDR, tvheadend, minisatip,..) has to
+.br
+be closed in order to avoid conflicts while running w_scan_cpp.
+.br
+Also, enshure that you start this tool with proper write
+.br
+permissions to your hardware, i.e using sudo.
+.br
+After a successful scan, w_scan_cpp provides the channels in
+.br
+different output formats.
+.br
+By default, the data is written as VDR channels.conf. If you
+.br
+prefer an other output format, see OPTIONS section.
+.\"
+.\"   /**************************************************************************
+.\"    * OPTIONS
+.\"    *************************************************************************/
+.\" ...gives a description of how each option affects program
+.\" behaviour. You knew that, did you not? 
+.\"
+.SH "OPTIONS"
+The following options are available.
+.TP 
+.B \-f TYPE, --frontend TYPE
+Frontend type, What programs do you want to search for?
+.br
+"a" = atsc (vsb/qam; North-America)
+.br
+"c" = DVB-C (digital cable)
+.br
+"s" = DVB-S/S2 (digital satellite)
+.br
+"t" = DVB-T/T2 (digital terrestrial)[default]
+.br
+.B IMPORTANT:
+Depending on "TYPE",
+.br
+either of the arguments "-s" or "-c" is mandatory.
+.TP
+.B \-A N, --atsc_type N
+specify ATSC type (North-America only)
+.br
+"1" = Terrestrial ('VSB') [default]
+.br
+"2" = Cable (sometimes called wrong 'QAM' or 'clear-QAM')
+.br
+"3" = both, Terrestrial and Cable
+.br
+.TP
+.B --satip
+use a SAT>IP (network connected) tuner via VDR Satip Plugin,
+.br
+instead of a local installed tuner.
+.br
+see https://www.satip.info
+.TP 
+.B \-c \<COUNTRY_ID\>, --country \<COUNTRY_ID\>
+Mandatory argument for ATSC, cable and terrestrian scans,
+.br
+see option -f.
+.br
+Specifies the country where you try to scan for channels.
+.br
+Argument is an uppercase two letter identifier, e.g.
+.br
+DE = Germany,
+.br
+FR = France
+.br
+GB = Great Britain
+.br
+US = United States,
+.br
+Use "-c?" for a list of all known identifiers.
+.TP
+.B \-s \<SATELLITE_ID\>, --satellite \<SATELLITE_ID\>
+choose your satellite here:
+.br
+S19E2, S13E0, S15W0, ..
+.br
+? for list
+.TP
+.B -I, --output-ini
+generate transponder ini instead of VDR channels.conf
+.TP
+.B -L, --output-VLC
+generate VLC xspf playlist instead of VDR channels.conf
+.TP
+.B -M, --output-mplayer
+generate mplayer output instead of VDR channels.conf
+.TP
+.B -X, --output-xine
+generate tzap/czap/xine output instead of VDR channels.conf
+.TP
+.B -x, --output-initial
+generate dtv scan table for dvbv5-scan instead of VDR
+.br
+channels.conf
+.TP
+.B -Z, --output-xml
+generate w_scan XML tuning data instead of VDR channels.conf
+.TP
+.B -Y <FILENAME>, --output-dat <FILENAME>
+generate channels.dat for SAT>IP DvbViewer Lite
+.TP
+.B -H, --extended-help
+view extended help (experts only)
+.SH "EXPERT OPTIONS"
+.SH "*** General ***"
+.TP
+.B -C <charset>, --charset <charset>
+convert to charset, i.e. 'UTF-8', 'ISO-8859-15'
+.br
+use 'iconv --list' for full list of charsets.
+.TP
+.B -v, --verbose
+be more verbose (repeat for more)
+.TP
+.B -q, --quiet
+be more quiet   (repeat for less)
+.SH "*** Services ***"
+.TP
+.B -R N, --radio-services N
+0 = don't search radio channels
+.br
+1 = search radio channels [default]
+.TP
+.B -T N, --tv-services N
+0 = don't search TV channels
+.br
+1 = search TV channels[default]
+.TP
+.B -E N, --encrypted-services (Conditional Access)
+N=0 gets only Free TV channels
+.br
+N=1 search also encrypted channels [default]
+.SH "*** Device ***"
+.TP
+.B -a N, --adapter N
+use device /dev/dvb/adapterN/ [default: auto detect]
+.br
+(also allowed: -a /dev/dvb/adapterN/frontendM)
+.SH "*** DVB-C ***"
+.TP
+.B -i N, --inversion N
+spectral inversion setting for cable TV
+.br
+(0: off, 1: on, 2: auto [default])
+.TP
+.B -Q N, --dvbc-modulation N
+set DVB-C modulation, see table:
+0  = QAM64
+.br
+1  = QAM256
+.br
+2  = QAM128
+.br
+3  = all (SLOW!)
+.br
+NOTE: for experienced users only!!
+.TP
+.B -e N,--dvbc-extflags N
+extended scan flags (DVB-C only),
+.br
+Any combination of these flags:
+.br
+1 = use extended symbolrate list
+.br
+enables scan of symbolrates
+.br
+   6900, 6875, 6111, 6250, 6790,
+.br
+   6811, 5900, 5000, 3450, 4000,
+.br
+   6950, 7000, 6952, 5156, 5483
+.br
+2 = extended QAM scan (enable QAM128)
+.br
+recommended for Nethterlands and Finland
+.br
+NOTE: extended scan will be *slow*
+.TP
+.B -S N, dvbc-symbolrate N
+set DVB-C symbol rate, see table:
+.br
+        0  = 6900 kSymbol/s
+.br
+        1  = 6875 kSymbol/s
+.br
+        4  = 6952 kSymbol/s
+.br
+        5  = 6950 kSymbol/s
+.br
+        6  = 6790 kSymbol/s
+.br
+        7  = 6811 kSymbol/s
+.br
+        8  = 6250 kSymbol/s
+.br
+        9  = 6111 kSymbol/s
+.br
+        11 = 5900 kSymbol/s
+.br
+        12 = 5483 kSymbol/s
+.br
+        14 = 5156 kSymbol/s
+.br
+        15 = 5000 kSymbol/s
+.br
+        16 = 4000 kSymbol/s
+.br
+        17 = 3450 kSymbol/s
+.br
+NOTE: for experienced users only!!
+.SH "*** DVB-S/S2 ***"
+.TP
+.B -l <LNB type>, --lnb-type <LNB type>
+choose LNB type by name (DVB-S/S2 only)
+.br
+? for list
+.TP
+.B -D Nc, --diseqc-switch Nc
+.br
+use DiSEqC committed switch position N
+.br
+AA..BB => 0..3
+.TP
+.B -D Nu, --diseqc-switch Nu
+.br
+use DiSEqC uncommitted switch position N
+.br
+N = 0..15
+.TP
+.B -r N, --rotor-position N
+use Rotor position N (needs -s)
+.TP
+.B --rotor-usals PARAMLIST
+.br
+where PARAMLIST is Lat:Long:Speed:Swing
+.br
+   Lat  : your site latitude  in tenth of degree, negative south, positive north
+.br
+   Long : your site longitude in tenth of degree, negative west , positive east
+.br
+   Speed: your rotor speed in tenth of degree per second
+.br
+   Swing: your rotor max swing in tenth of degree
+.br
+example: a rotor located in Berlin/Germany (52.52,13.41),
+.br
+            moving at 1.5deg/sec, max swing 65deg gives
+.br
+            --rotor-usals 525:134:15:650
+.TP
+.B -u    <slot:user_frequency:sat_pos(:user_pin)>
+see --scr
+.TP
+.B --scr <slot:user_frequency:sat_pos(:user_pin)>
+Satellite Channel Routing
+  a) use EN50494:
+     slot          :  slot number for user frequency, 0..7
+     user_frequency:  receiver user frequency for slot in MHz, i.e. 1400
+     sat_pos       :  satellite position (upper case), 'A' or 'B'
+     user_pin      :  optional user pin, normally not used (0..255)
+  i.e. -u 0:1400:A for EN50494, slot 0 at 1400 MHz, Satellite Pos 'A'
+  
+  b) use advanced SCR EN50607/JESS:
+     slot          :  slot number for user frequency, 0..31
+     user_frequency:  receiver user frequency for slot in MHz, i.e. 1400
+     sat_pos       :  satellite position (lower case), 'a' .. 'p'
+     user_pin      :  optional user pin, normally not used (0..255)
+  i.e. -u 0:1400:a for EN50607 slot 0 at 1400 MHz, Satellite Pos 'a'
+                         sat| committed switch  | uncommitted switch
+                         pos| option | position | option | position
+                          'a'    0   |   0      |   0    |   0
+                          'b'    0   |   1      |   0    |   0
+                          'c'    1   |   0      |   0    |   0
+                          'd'    1   |   1      |   0    |   0
+                          'e'    0   |   0      |   0    |   1
+                          'f'    0   |   1      |   0    |   1
+                          'g'    1   |   0      |   0    |   1
+                          'h'    1   |   1      |   0    |   1
+                          'i'    0   |   0      |   1    |   0
+                          'j'    0   |   1      |   1    |   0
+                          'k'    1   |   0      |   1    |   0
+                          'l'    1   |   1      |   1    |   0
+                          'm'    0   |   0      |   1    |   1
+                          'n'    0   |   1      |   1    |   1
+                          'o'    1   |   0      |   1    |   1
+                          'p'    1   |   1      |   1    |   1
+.SH "REPORTING BUGS"
+see README file from source code package.
+.SH "AUTHOR"
+Written by W.Koehler
+.PP 
+Permission is granted to copy, distribute and/or modify this
+.br
+document under the terms of the GNU General Public License,
+.br
+Version 2 any later version published by the Free Software
+.br
+Foundation.
+.SH "SEE ALSO"
+.br
+vdr (1)
+.br
+w_scan (1)

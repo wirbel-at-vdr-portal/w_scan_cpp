@@ -52,3 +52,12 @@
 -------------------------------------------------------------------------------
 * OutputFormats.cpp
    - fix VLC output: Frequencies were rounded incorrectly.
+
+2021xxxx:
+-------------------------------------------------------------------------------
+* CmdOpts.cpp
+   - change cmdline help to point on general SAT>IP page
+* Makefile
+   - fix variable man[1-5]dir
+* doc/w_scan_cpp.1
+   - initial man page for w_scan_cpp
