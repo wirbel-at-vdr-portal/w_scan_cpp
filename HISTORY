@@ -59,5 +59,6 @@
    - change cmdline help to point on general SAT>IP page
 * Makefile
    - fix variable man[1-5]dir
+   - add -DDISABLE_TEMPLATES_COLLIDING_WITH_STL
 * doc/w_scan_cpp.1
    - initial man page for w_scan_cpp
