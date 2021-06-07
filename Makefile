@@ -180,7 +180,6 @@ APIVERSION   = $(shell sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$$/\1/p' $(vdr
 DEFINES   = -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -DPLUGIN_NAME_I18N='"cmd"'
 DEFINES  += -DAPIVERSION='"$(APIVERSION)"'
 DEFINES  += -DSTATIC_PLUGINS
-DEFINES  += -DDISABLE_TEMPLATES_COLLIDING_WITH_STL
 LIBS      = -ljpeg -lpthread -lcap -ldl -lrt $(shell $(PKG_CONFIG) --libs freetype2 fontconfig)
 LIBS     += $(shell curl-config --libs) -lpugixml
 INCLUDES  = -I$(srcdir)
@@ -247,7 +246,7 @@ endif
 ifeq ($(CXX),@g++)
 	@echo -e "${BL} CXX $@${RST}"
 endif
-	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) -o $@ $<
+	$(CXX) $(CXXFLAGS) -c $(DEFINES) -DDISABLE_TEMPLATES_COLLIDING_WITH_STL $(INCLUDES) -o $@ $<
 
 all: $(LIBSI_OBJS) $(VDR_OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(OBJS)
 ifeq ($(CXX),@g++)
