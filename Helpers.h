@@ -29,7 +29,7 @@
 std::vector<std::string> split(const std::string& s, const char delim);
 std::string LowerCase(std::string s);
 std::string UpperCase(std::string s);
-std::string FrontFill(std::string s, size_t n);              
+std::string FrontFill(std::string s, size_t n);
 std::string BackFill(std::string s, size_t n);
 std::string IntToStr(int64_t n, size_t Zeros = 0);
 std::string IntToHex(uint64_t n, size_t Digits = 0);

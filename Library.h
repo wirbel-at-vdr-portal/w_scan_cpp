@@ -14,7 +14,7 @@ public:
 
 private:
   std::vector<std::string> args;
-  std::vector<char*> argv; 
+  std::vector<char*> argv;
   cPlugin* plugin;
   /* invoke plugin factory */
   void* handle;
