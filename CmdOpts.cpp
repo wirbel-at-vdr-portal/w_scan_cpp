@@ -572,7 +572,7 @@ bool ParseSatipServer(std::string s) {
   size_t pos = items[0].find_last_of(" @");
   WirbelscanSetup.SatipAddr  = items[0].substr(pos + 1);
   WirbelscanSetup.SatipModel = items[1];
-  WirbelscanSetup.SatipDesc  = items[2];  
+  WirbelscanSetup.SatipDesc  = items[2];
 
   return true;
 }
