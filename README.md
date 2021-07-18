@@ -6,4 +6,4 @@ This is my **test** w_scan_cpp repo.
 
 For further details on w_scan_cpp, see it's [Homepage](https://www.gen2vdr.de/wirbel/w_scan_cpp/index2.html).
 
-This one my workbench only.
+This one is my workbench only.
