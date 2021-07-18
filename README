@@ -58,15 +58,15 @@ debian/ubuntu users, the package names are
  - libfreetype6-dev
  - libfontconfig1-dev
  - libcurl4-openssl-dev
- - git 
+ - git
  - libjpeg-dev
  - libpugixml-dev
  - libcap-dev
  - ca-certificates
 
 for example:
-  # apt-get install linux-libc-dev libfreetype6-dev libfontconfig1-dev 
-    libcurl4-openssl-dev git wget libjpeg-dev libpugixml-dev libcap-dev 
+  # apt-get install linux-libc-dev libfreetype6-dev libfontconfig1-dev
+    libcurl4-openssl-dev git wget libjpeg-dev libpugixml-dev libcap-dev
     ca-certificates
 
 

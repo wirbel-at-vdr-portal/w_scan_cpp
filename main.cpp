@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
      std::string name = "Device" +  std::to_string(i);
      if (d->NumProvidedSystems() < 1) {
         name += ": Device or resource busy";
-        }        
+        }
      else if (*d->DeviceName() != nullptr) {
         if (dvb) {
            name += " dvb:";

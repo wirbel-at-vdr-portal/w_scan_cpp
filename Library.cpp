@@ -92,7 +92,7 @@ Library::~Library() {
   if (destroy != nullptr)
      destroy(plugin);
 
-  #ifndef STATIC_PLUGINS     
+  #ifndef STATIC_PLUGINS
      dlclose(handle);
   #endif
   }

@@ -38,9 +38,9 @@ std::string SatArgs(void) {
 
 bool PrintSatellites(void) {
   std::stringstream ss;
-  for(size_t i = 0; i < SatIdValues.size(); i++) 
+  for(size_t i = 0; i < SatIdValues.size(); i++)
      std::cout << FrontFill("", 8)
-               << BackFill(SatIdValues[i], 20) 
+               << BackFill(SatIdValues[i], 20)
                << SatNames[i]
                << std::endl;
   WirbelscanSetup.HelpText = true;
