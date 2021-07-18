@@ -199,6 +199,9 @@ bool ParseArguments(int argc, char* argv[]) {
      else if ((Argument == "-L") or (Argument == "--output-VLC")) {
         OutputFormat = "VLC";
         }
+     else if (Argument == "--output-VLC-satip") {
+        OutputFormat = "VLC_SAT>IP";
+        }
      else if ((Argument == "-M") or (Argument == "--output-mplayer")) {
         OutputFormat = "MPLAYER";
         }
@@ -230,6 +233,10 @@ bool ParseArguments(int argc, char* argv[]) {
         WirbelscanSetup.verbosity++;
      else if ((Argument == "-q") or (Argument == "--quiet"))
         WirbelscanSetup.verbosity--;
+
+     else if (Argument == "--sort-criteria") {
+        WirbelscanSetup.SortCriteria = ReadFile(Param), i++;
+        }
      else if ((Argument == "-R") or (Argument == "--radio-services")) {
         PARAM("0,1");
         WirbelscanSetup.scanflags &= ~(1 << 1);
@@ -409,6 +416,8 @@ bool HelpText(std::string ProgName) {
   ss << "               generate transponder ini" << std::endl;
   ss << "       -L, --output-VLC" << std::endl;
   ss << "               generate VLC xspf playlist" << std::endl;
+  ss << "       --output-VLC-satip" << std::endl;
+  ss << "               generate VLC xspf playlist for SAT>IP" << std::endl;
   ss << "       -M, --output-mplayer" << std::endl;
   ss << "               mplayer output instead of vdr channels.conf" << std::endl;
   ss << "       -X, --output-xine" << std::endl;
@@ -438,6 +447,9 @@ bool ExtHelpText(std::string ProgName) {
   ss << "       -q, --quiet" << std::endl;
   ss << "               be more quiet   (repeat for less)" << std::endl;
   ss << ".................Services................" << std::endl;
+  ss << "       --sort-criteria FILE" << std::endl;
+  ss << "               sort output as given by FILE." << std::endl;
+  ss << "               For details, see w_scan_cpp man page." << std::endl;
   ss << "       -R N, --radio-services N" << std::endl;
   ss << "               0 = don't search radio channels" << std::endl;
   ss << "               1 = search radio channels [default]" << std::endl;
@@ -548,5 +560,19 @@ bool ExtHelpText(std::string ProgName) {
 
   HelpText(ProgName);
   std::cout << ss.str();
+  return true;
+}
+
+bool ParseSatipServer(std::string s) {
+  auto items = split(s, '|');
+
+  if ((s.find('+') != 0) or (items.size() != 3))
+     return false;
+
+  size_t pos = items[0].find_last_of(" @");
+  WirbelscanSetup.SatipAddr  = items[0].substr(pos + 1);
+  WirbelscanSetup.SatipModel = items[1];
+  WirbelscanSetup.SatipDesc  = items[2];  
+
   return true;
 }

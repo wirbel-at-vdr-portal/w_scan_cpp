@@ -107,3 +107,10 @@ void UnloadLibraries(void) {
 
   libs.clear();
 }
+
+bool SVDRP(cPlugin* Plugin, std::string Command, std::string& Reply) {
+  int replyCode = 900;
+  cString s = Plugin->SVDRPCommand(Command.c_str(), 0, replyCode);
+  Reply = *s;
+  return (replyCode >= 900) and (replyCode <= 999);
+}

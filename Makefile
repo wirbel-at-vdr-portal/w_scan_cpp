@@ -6,7 +6,7 @@
 # *****************************************************************************/
 BINARY = w_scan_cpp
 
-WIRBELSCAN_VERSION = wirbelscan-2021.03.07
+WIRBELSCAN_VERSION = wirbelscan-2021.07.14
 
 SATIP_GIT_ADDR = https://github.com/rofafor/vdr-plugin-satip
 
@@ -95,15 +95,15 @@ libexecdir = $(exec_prefix)/libexec
 
 #------------------------
 # root of the directory tree for read-only architecture-independent data files
-# datadir’s default value is based on this variable; so are infodir, mandir,
+# datadir's default value is based on this variable; so are infodir, mandir,
 # and others. 
 datarootdir = $(prefix)/share
 
 #------------------------
 # directory for installing idiosyncratic read-only architecture-independent
-# data files for this program. This is usually the same place as ‘datarootdir’,
+# data files for this program. This is usually the same place as 'datarootdir',
 # but we use the two separate variables so that you can move these program-
-# specific files without altering the location for Info files, man pages, etc. 
+# specific files without altering the location for Info files, man pages, etc.
 # ->  Most packages install their data under $(datadir)/package-name/.
 datadir = $(datarootdir)
 
@@ -192,7 +192,7 @@ LDFLAGS  ?= -L$(srcdir) -L$(vdrdir) -L$(vdrlibsidir)
 
 
 SOURCES           := $(wildcard $(srcdir)/*.cpp)
-VDR_SOURCES       := $(shell find $(vdrdir)  -maxdepth 1 ! -name "vdr.c" -name "*.c" )
+VDR_SOURCES       := $(shell find $(vdrdir)  -maxdepth 1 ! -name "vdr.c" -name "*.c" 2>/dev/null)
 LIBSI_SOURCES     := $(wildcard $(vdrlibsidir)/*.c)
 WIRBELSCAN_SOURCES = $(wildcard $(pluginsrcdir)/wirbelscan/*.c)
 SATIP_SOURCES      = $(wildcard $(pluginsrcdir)/satip/*.c)
@@ -269,6 +269,9 @@ uninstall:
 
 .PHONY: download
 download: $(vdrdir) $(pluginsrcdir)/satip $(pluginsrcdir)/wirbelscan
+	@$(CXX) -std=c++11 MakeHeader.cc -o MakeHeader.bin
+	@$(srcdir)/MakeHeader.bin $(pluginsrcdir)/satip/
+	@$(RM) -rf $(srcdir)/MakeHeader.bin
 
 $(vdrdir):
 	$(GIT) clone git://git.tvdr.de/vdr.git
@@ -276,40 +279,11 @@ $(vdrdir):
 	$(MKDIR_P) $(pluginsrcdir)
 	$(MKDIR_P) $(pluginlibdir)
 
-#/******************************************************************************
-# * generate a header for satip.
-# * see file ./vdr/PLUGINS/src/satip/satip.c and compare to
-# * https://stackoverflow.com/questions/4857424/extract-lines-between-2-tokens-in-a-text-file-using-bash
-# *****************************************************************************/
-SATIP_HDR__FROM = trNOOP("SAT>IP Devices");
-SATIP_HDR__TO  = cPluginSatip\:\:
-
-$(pluginsrcdir)/satip/satip.h:
-	$(SED) -n '/$(SATIP_HDR__FROM)/{:a;n;/$(SATIP_HDR__TO)/b;p;ba}' $(pluginsrcdir)/satip/satip.c > $(pluginsrcdir)/satip/satip.h
-	$(SED) -i 's/VERSION/SATIP_VERSION/' $(pluginsrcdir)/satip/satip.h
-	$(SED) -i 's/DESCRIPTION/SATIP_DESCRIPTION/' $(pluginsrcdir)/satip/satip.h
-	$(SED) -i '1i\\nclass cSatipDiscoverServers;\n' $(pluginsrcdir)/satip/satip.h
-	$(SED) -i '1i\extern const char SATIP_DESCRIPTION[];' $(pluginsrcdir)/satip/satip.h
-	$(SED) -i '1i\extern const char SATIP_VERSION[];' $(pluginsrcdir)/satip/satip.h
-	$(SED) -i '1i\#include <vdr\/plugin.h>\n' $(pluginsrcdir)/satip/satip.h
-	$(SED) -i '1i\#pragma once' $(pluginsrcdir)/satip/satip.h
-	$(SED) -i 's/VDRPLUGINCREATOR/\/\/VDRPLUGINCREATOR/g' $(pluginsrcdir)/satip/satip.c
-	$(SED) -i 's/class cPluginSatip/\#include \"satip.h\"\n \/* class cPluginSatip/' $(pluginsrcdir)/satip/satip.c
-	$(SED) -i 's/cPluginSatip\:\:cPluginSatip(void)/*\/\ncPluginSatip\:\:cPluginSatip(void)/' $(pluginsrcdir)/satip/satip.c
-	$(SED) -i 's/const char VERSION\[\]/const char SATIP_VERSION\[\]/' $(pluginsrcdir)/satip/satip.c
-	$(SED) -i 's/static const char DESCRIPTION\[\]/const char SATIP_DESCRIPTION\[\]/' $(pluginsrcdir)/satip/satip.c
-	$(SED) -i 's/const char VERSION\[\]/const char SATIP_VERSION\[\]/' $(pluginsrcdir)/satip/common.h
-	$(SED) -i 's/VERSION/SATIP_VERSION/g' $(pluginsrcdir)/satip/discover.c
-	$(SED) -i 's/VERSION/SATIP_VERSION/g' $(pluginsrcdir)/satip/rtsp.c
-
-
 $(pluginsrcdir)/satip.git:
 	$(CD) $(pluginsrcdir) && $(GIT) clone $(SATIP_GIT_ADDR)
 	$(CD) $(pluginsrcdir) && $(LN) -sf vdr-plugin-satip satip
 
-
-$(pluginsrcdir)/satip: $(pluginsrcdir)/satip.git $(pluginsrcdir)/satip/satip.h
-
+$(pluginsrcdir)/satip: $(pluginsrcdir)/satip.git
 
 $(pluginsrcdir)/wirbelscan:
 	$(CD) $(pluginsrcdir) && $(WGET) $(WIRBELSCAN_DL_ADDR)
@@ -322,6 +296,7 @@ clean:
 	@$(RM) -f $(LIBSI_OBJS) $(VDR_OBJS) $(OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(BINARY)
 	@$(RM) -rf $(vdrdir)/.git
 	@$(RM) -rf $(pluginsrcdir)/vdr-plugin-satip/.git
+	@$(RM) -rf MakeHeader.bin
 
 mrproper: clean
 	@$(RM) -r $(vdrdir)

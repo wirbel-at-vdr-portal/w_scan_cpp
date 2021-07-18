@@ -30,3 +30,5 @@ public:
 extern std::vector<Library*> libs;
 
 void UnloadLibraries(void);
+
+bool SVDRP(cPlugin* Plugin, std::string Command, std::string& Reply);

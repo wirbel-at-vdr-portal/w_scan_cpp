@@ -38,8 +38,13 @@ public:
   std::string adapter;
   bool HelpText;
   std::string OutputFile;
+  std::vector<std::string> SortCriteria;
+  std::string SatipAddr;
+  std::string SatipModel;
+  std::string SatipDesc;
 };
 extern wsetup WirbelscanSetup;
 extern std::string OutputFormat;
 
 bool ParseArguments(int argc, char* argv[]);
+bool ParseSatipServer(std::string s);

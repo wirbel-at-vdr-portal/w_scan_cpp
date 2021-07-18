@@ -38,7 +38,7 @@
 .\"    * NAME
 .\"    *************************************************************************/
 .TH "w_scan_cpp" 1 "16 May 2021" "" ""
-.SH NAME w_scan_cpp \- a universal DTV scanner. It's the successor of w_scan.
+.SH NAME w_scan_cpp \- an universal DTV scanner and successor of w_scan.
 .\"
 .\" The \- is of importance here. The backslash is needed to make the dash
 .\" distinct from a hyphenation dash that may appear in either the command name
@@ -181,6 +181,9 @@ generate transponder ini instead of VDR channels.conf
 .B -L, --output-VLC
 generate VLC xspf playlist instead of VDR channels.conf
 .TP
+.B --output-VLC-satip
+generate VLC xspf playlist for SAT>IP instead of VDR channels.conf
+.TP
 .B -M, --output-mplayer
 generate mplayer output instead of VDR channels.conf
 .TP
@@ -214,6 +217,37 @@ be more verbose (repeat for more)
 .B -q, --quiet
 be more quiet   (repeat for less)
 .SH "*** Services ***"
+.TP
+.B --sort-criteria FILE
+sort services in sequence, as given by FILE.
+.br
+FILE is a text file, each line gives the name of a service,
+.br
+optionally followed by a delimiter (',' or ';' or ':') and a comment.
+.br
+If 'name' is 7bit ASCII only, the comparison is case-insensitive.
+.br
+Otherwise, for non-7bit ASCII, the case behaviour depends on your system.
+.br
+w_scan_cpp tries to output services in the same sequence as your file -
+.br
+but only for those channels which are really found.
+.br
+If several services match the name, they are grouped together.
+.br
+Services not matching any sort-criteria appear after the sorted lines.
+.br
+NOTE: 'FILE' should be in the same encoding as used during scan, ie utf8.
+.br
+Example:
+.TS
+l.
+\fBDas Erste HD;ARD:\fR
+\fBZDF HD\fR
+\fB:*** private channels ***\fR
+\fBSAT.1 HD;ProSiebenSat.1\fR
+\fBRTL HD:should be channel number 4.\fR
+.TE
 .TP
 .B -R N, --radio-services N
 0 = don't search radio channels

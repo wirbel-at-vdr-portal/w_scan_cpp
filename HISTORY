@@ -62,3 +62,26 @@
    - add -DDISABLE_TEMPLATES_COLLIDING_WITH_STL for *.cpp files
 * doc/w_scan_cpp.1
    - initial man page for w_scan_cpp
+
+20210718:
+-------------------------------------------------------------------------------
+* CmdOpts.cpp
+   - add new options:
+     --output-VLC-satip, generate VLC xspf playlist for SAT>IP
+     --sort-criteria, sort output as per file
+* doc/w_scan_cpp.1
+   - document new options
+* main.cpp
+   - print satip server address
+* Helpers.{h,cpp}
+   - add functions ReadFile, SVDRP
+* Makefile
+   - update to wirbelscan-2021.07.14
+   - remove a few non-Ascii chars
+   - silence find command
+   - create satip.h by extra binary instead of sed
+* OutputFormats.cpp
+   - PrintVLC
+     - fix ampersand in Name
+     - add missing </vlc:option> after Sat plp-id
+   - add PrintVLCsatip

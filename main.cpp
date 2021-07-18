@@ -64,8 +64,25 @@ int main(int argc, char* argv[]) {
      Message("skip DVB devices - using satip plugin.");
 
   while (!cDevice::WaitForAllDevicesReady(3));
-  if (satip)
-     Sleep(3000);
+  if (satip) {
+     std::string Reply;
+     for(int i=0; (i < 5) and not SVDRP(satip, "LIST", Reply); i++) {
+        SVDRP(satip, "SCAN", Reply);
+        Message(Reply);
+        Sleep(3000);
+        }
+     for(auto line:split(Reply, '\n')) {
+        if (not ParseSatipServer(line))
+           continue;
+        break;
+        }
+
+     if (WirbelscanSetup.SatipAddr.empty()) {
+        Message("no satip server found.");
+        return -1;
+        }
+     Message("using " + WirbelscanSetup.SatipDesc + "@" + WirbelscanSetup.SatipAddr);
+     }
 
   for(int i = 0; i < cDevice::NumDevices(); i++) {
      cDevice* d = cDevice::GetDevice(i);
@@ -137,6 +154,7 @@ int main(int argc, char* argv[]) {
      if      (OutputFormat == "VDR")            PrintVDR(data);
      else if (OutputFormat == "INI")            PrintIni(data);
      else if (OutputFormat == "VLC")            PrintVLC(data);
+     else if (OutputFormat == "VLC_SAT>IP")     PrintVLCsatip(data);
      else if (OutputFormat == "XINE")           PrintXine(data);
      else if (OutputFormat == "MPLAYER")        PrintXine(data, true);
      else if (OutputFormat == "INITIAL")        PrintInitial(data);

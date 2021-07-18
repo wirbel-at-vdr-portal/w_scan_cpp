@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <fstream>
 #include <iomanip>
 #include <thread>
 #include <chrono>
@@ -120,4 +121,25 @@ bool InitCharTables(void) {
      }
   else
      return false;
+}
+
+std::vector<std::string> ReadFile(std::string aFileName) {
+  std::vector<std::string> result;
+  std::ifstream is(aFileName.c_str());
+  if (is) {
+     std::stringstream ss;
+     std::string s;
+     size_t p;
+     ss << is.rdbuf();
+     is.close();
+     while(std::getline(ss, s)) {
+        if (s.empty() or s[0] == ':')
+           continue;
+        p = s.find_first_of(",;:");
+        if (p != std::string::npos)
+           s = s.substr(0,p);
+        result.push_back(s);
+        }
+     }
+  return result;
 }
