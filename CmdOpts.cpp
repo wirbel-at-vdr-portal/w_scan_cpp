@@ -162,7 +162,7 @@ bool ParseArguments(int argc, char* argv[]) {
         return HelpText(ProgName);
      else if ((Argument == "-H") or (Argument == "--extended-help"))
         return ExtHelpText(ProgName);
-     else if (Argument == "--satip") {
+     else if ((Argument == "-t") or (Argument == "--satip")) {
         libs.push_back(new Library(LibSatip, ""));
         satip = libs[1]->Plugin();
         }
@@ -199,13 +199,13 @@ bool ParseArguments(int argc, char* argv[]) {
      else if ((Argument == "-L") or (Argument == "--output-VLC")) {
         OutputFormat = "VLC";
         }
-     else if (Argument == "--output-VLC-satip") {
+     else if ((Argument == "-V") or (Argument == "--output-VLC-satip")) {
         OutputFormat = "VLC_SAT>IP";
         }
      else if ((Argument == "-M") or (Argument == "--output-mplayer")) {
         OutputFormat = "MPLAYER";
         }
-     else if (Argument == "--output-satellites.dat") {
+     else if ((Argument == "-d") or ((Argument == "--output-satellites.dat")) {
         OutputFormat = "SATELLITES.DAT";
         }
      else if ((Argument == "-X") or (Argument == "--output-xine")) {
@@ -228,13 +228,24 @@ bool ParseArguments(int argc, char* argv[]) {
            return false;
            }
         }
+     else if ((Argument == "-F") or ((Argument == "--femon")) {
+        if (not Param.empty()) {
+           WirbelscanSetup.femon = Param;
+           OutputFormat = "FEMON";
+           i++;
+           }
+        else {
+           ErrorMessage("missing parameter VDR-Channel");
+           return false;
+           }
+        }
 
      else if ((Argument == "-v") or (Argument == "--verbose"))
         WirbelscanSetup.verbosity++;
      else if ((Argument == "-q") or (Argument == "--quiet"))
         WirbelscanSetup.verbosity--;
 
-     else if (Argument == "--sort-criteria") {
+     else if ((Argument == "-C") or ((Argument == "--sort-criteria")) {
         WirbelscanSetup.SortCriteria = ReadFile(Param), i++;
         }
      else if ((Argument == "-R") or (Argument == "--radio-services")) {
@@ -315,7 +326,7 @@ bool ParseArguments(int argc, char* argv[]) {
         PARAM(IntRange(0,360));
         RotorPosition = std::stol(Param);
         }
-     else if (Argument == "--rotor-usals") {
+     else if ((Argument == "-U") or (Argument == "--rotor-usals")) {
         auto l = split(Param,':');
         if (l.size() != 4) {
            ErrorMessage("invalid parameter '" + Param + "' - wrong number of items.");
@@ -399,7 +410,7 @@ bool HelpText(std::string ProgName) {
   ss << "               1 = Terrestrial [default]" << std::endl;
   ss << "               2 = Cable" << std::endl;
   ss << "               3 = both, Terrestrial and Cable" << std::endl;
-  ss << "       --satip" << std::endl;
+  ss << "       -t, --satip" << std::endl;
   ss << "               use SAT>IP tuner via VDR Satip Plugin" << std::endl;
   ss << "               see https://www.satip.info" << std::endl;
   ss << "       -c, --country" << std::endl;
@@ -416,7 +427,7 @@ bool HelpText(std::string ProgName) {
   ss << "               generate transponder ini" << std::endl;
   ss << "       -L, --output-VLC" << std::endl;
   ss << "               generate VLC xspf playlist" << std::endl;
-  ss << "       --output-VLC-satip" << std::endl;
+  ss << "       -V, --output-VLC-satip" << std::endl;
   ss << "               generate VLC xspf playlist for SAT>IP" << std::endl;
   ss << "       -M, --output-mplayer" << std::endl;
   ss << "               mplayer output instead of vdr channels.conf" << std::endl;
@@ -447,7 +458,7 @@ bool ExtHelpText(std::string ProgName) {
   ss << "       -q, --quiet" << std::endl;
   ss << "               be more quiet   (repeat for less)" << std::endl;
   ss << ".................Services................" << std::endl;
-  ss << "       --sort-criteria FILE" << std::endl;
+  ss << "       -C, --sort-criteria FILE" << std::endl;
   ss << "               sort output as given by FILE." << std::endl;
   ss << "               For details, see w_scan_cpp man page." << std::endl;
   ss << "       -R N, --radio-services N" << std::endl;
@@ -514,7 +525,7 @@ bool ExtHelpText(std::string ProgName) {
   ss << "               N = 0..15" << std::endl;
   ss << "       -r N, --rotor-position N" << std::endl;
   ss << "               use Rotor position N (needs -s)" << std::endl;
-  ss << "       --rotor-usals PARAMLIST" << std::endl;
+  ss << "       -U, --rotor-usals PARAMLIST" << std::endl;
   ss << "               where PARAMLIST is Lat:Long:Speed:Swing" << std::endl;
   ss << "                 Lat  : your site latitude  in tenth of degree, negative south, positive north" << std::endl;
   ss << "                 Long : your site longitude in tenth of degree, negative west , positive east"  << std::endl;
