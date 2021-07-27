@@ -230,7 +230,7 @@ bool ParseArguments(int argc, char* argv[]) {
         }
      else if ((Argument == "-F") or ((Argument == "--femon")) {
         if (not Param.empty()) {
-           WirbelscanSetup.femon = Param;
+           WirbelscanSetup.FemonChannel = Param;
            OutputFormat = "FEMON";
            i++;
            }
