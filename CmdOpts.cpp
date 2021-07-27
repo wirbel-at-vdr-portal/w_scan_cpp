@@ -205,7 +205,7 @@ bool ParseArguments(int argc, char* argv[]) {
      else if ((Argument == "-M") or (Argument == "--output-mplayer")) {
         OutputFormat = "MPLAYER";
         }
-     else if ((Argument == "-d") or ((Argument == "--output-satellites.dat")) {
+     else if (Argument == "--output-satellites.dat") {
         OutputFormat = "SATELLITES.DAT";
         }
      else if ((Argument == "-X") or (Argument == "--output-xine")) {
