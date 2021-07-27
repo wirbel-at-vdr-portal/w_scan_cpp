@@ -65,6 +65,12 @@ std::string IntToHex(uint64_t n, size_t Digits) {
   return "0x" + ss.str();
 }
 
+std::string ExpToStr(double d) {
+  char buf[256];
+  sprintf(buf, "%e", d);
+  return std::string(buf);
+}
+
 std::string VdrSource(std::string s) {
   size_t p  = s.find_first_of("EWew");
   size_t p2 = s.find(".");
