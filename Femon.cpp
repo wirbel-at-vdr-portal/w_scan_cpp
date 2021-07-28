@@ -52,7 +52,7 @@ int SignalMonitor(cDevice* Device, std::string& Channel) {
         else
            s += "0 | ";
 
-        if (result & strength_available)
+        if ((result & strength_available) and (SignalLevel_dBm < 0))
            s += "signal " + std::to_string(SignalLevel_dBm + 108.75) + "dBuV | ";
         else if ((i = Device->SignalStrength()) > -1)
            s += "signal " + std::to_string(i) + "% | ";
