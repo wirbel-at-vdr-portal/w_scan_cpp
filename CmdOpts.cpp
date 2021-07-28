@@ -228,7 +228,7 @@ bool ParseArguments(int argc, char* argv[]) {
            return false;
            }
         }
-     else if ((Argument == "-F") or ((Argument == "--femon")) {
+     else if ((Argument == "-F") or (Argument == "--femon")) {
         if (not Param.empty()) {
            WirbelscanSetup.FemonChannel = Param;
            OutputFormat = "FEMON";
@@ -245,7 +245,7 @@ bool ParseArguments(int argc, char* argv[]) {
      else if ((Argument == "-q") or (Argument == "--quiet"))
         WirbelscanSetup.verbosity--;
 
-     else if ((Argument == "-C") or ((Argument == "--sort-criteria")) {
+     else if ((Argument == "-C") or (Argument == "--sort-criteria")) {
         WirbelscanSetup.SortCriteria = ReadFile(Param), i++;
         }
      else if ((Argument == "-R") or (Argument == "--radio-services")) {
