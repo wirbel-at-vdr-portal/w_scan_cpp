@@ -85,3 +85,10 @@
      - fix ampersand in Name
      - add missing </vlc:option> after Sat plp-id
    - add PrintVLCsatip
+
+20210xxx:
+-------------------------------------------------------------------------------
+* Helpers.{h,cpp}
+   - add functions FloatToStr, ExpToStr
+* Femon.{h,cpp}, CmdOpts.{h,cpp}, doc/w_scan_cpp.1
+   - add new option --femon
