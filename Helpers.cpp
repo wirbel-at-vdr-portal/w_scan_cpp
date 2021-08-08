@@ -49,34 +49,26 @@ std::string BackFill(std::string s, size_t n) {
   return result;
 }
 
+template<class T> std::string ToString(std::string format, T aVar) {
+  char buf[256];
+  snprintf(buf, 256-1, format.c_str(), aVar);
+  return buf;
+};
+
 std::string IntToStr(int64_t n, size_t Zeros) {
-  std::string result = std::to_string((long long) n);
-  if (Zeros > result.size())
-     return std::string(Zeros - result.size(), '0') + result;
-  return result;
+  return ToString("%0" + std::to_string(Zeros) + "lld", (long long) n);
 }
 
 std::string IntToHex(uint64_t n, size_t Digits) {
-  std::stringstream ss;
-  ss << std::uppercase << std::hex << (unsigned long long) n;
-
-  if (Digits > ss.str().size())
-     return "0x" + std::string(Digits - ss.str().size(), '0') + ss.str();
-  return "0x" + ss.str();
+  return ToString("0x%.0" + std::to_string(Digits) + "llX", (long long) n);
 }
 
-std::string FloatToStr(double d, int Precisision) {
-  char buf[257];
-  std::string format;
-  format = "%." + std::to_string(Precisision) + "f";
-  snprintf(buf, 256, format.c_str(), d);
-  return buf;
+std::string FloatToStr(double d, int Precision) {
+  return ToString("%." + std::to_string(Precision) + "f", d);
 }
 
 std::string ExpToStr(double d) {
-  char buf[256];
-  sprintf(buf, "%e", d);
-  return std::string(buf);
+  return ToString("%.3e", d);
 }
 
 std::string VdrSource(std::string s) {

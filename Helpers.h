@@ -34,7 +34,7 @@ std::string FrontFill(std::string s, size_t n);
 std::string BackFill(std::string s, size_t n);
 std::string IntToStr(int64_t n, size_t Zeros = 0);
 std::string IntToHex(uint64_t n, size_t Digits = 0);
-std::string FloatToStr(double d, int Precisision = 1);
+std::string FloatToStr(double d, int Precision = 1);
 std::string ExpToStr(double d);
 std::string VdrSource(std::string s);
 void Sleep(size_t msec);
