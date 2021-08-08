@@ -56,7 +56,9 @@ template<class T> std::string ToString(std::string format, T aVar) {
 };
 
 std::string IntToStr(int64_t n, size_t Zeros) {
-  return ToString("%0" + std::to_string(Zeros) + "lld", (long long) n);
+  if (Zeros > 0)
+     return ToString("%0" + std::to_string(Zeros) + "lld", (long long) n);
+  return ToString("%lld", (long long) n);
 }
 
 std::string IntToHex(uint64_t n, size_t Digits) {
