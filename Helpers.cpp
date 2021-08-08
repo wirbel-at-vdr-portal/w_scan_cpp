@@ -65,6 +65,20 @@ std::string IntToHex(uint64_t n, size_t Digits) {
   return "0x" + ss.str();
 }
 
+std::string FloatToStr(double d, int Precisision) {
+  char buf[257];
+  std::string format;
+  format = "%." + std::to_string(Precisision) + "f";
+  snprintf(buf, 256, format.c_str(), d);
+  return buf;
+}
+
+std::string ExpToStr(double d) {
+  char buf[256];
+  sprintf(buf, "%e", d);
+  return std::string(buf);
+}
+
 std::string VdrSource(std::string s) {
   size_t p  = s.find_first_of("EWew");
   size_t p2 = s.find(".");

@@ -14,6 +14,7 @@
 #include "DiSEqC.h"
 #include "ScanControl.h"
 #include "OutputFormats.h"
+#include "Femon.h"
 #include "Version.h"
 
 int main(int argc, char* argv[]) {
@@ -105,6 +106,9 @@ int main(int argc, char* argv[]) {
         }
      Message(name);
      }
+
+  if (OutputFormat == "FEMON")
+     return SignalMonitor(cDevice::GetDevice(0), WirbelscanSetup.FemonChannel);
 
   Message("/*******************************************************************************");
   Message(" * Scan Type");

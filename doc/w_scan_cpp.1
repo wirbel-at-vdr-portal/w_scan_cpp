@@ -142,7 +142,7 @@ specify ATSC type (North-America only)
 "3" = both, Terrestrial and Cable
 .br
 .TP
-.B --satip
+.B -t, --satip
 use a SAT>IP (network connected) tuner via VDR Satip Plugin,
 .br
 instead of a local installed tuner.
@@ -181,7 +181,7 @@ generate transponder ini instead of VDR channels.conf
 .B -L, --output-VLC
 generate VLC xspf playlist instead of VDR channels.conf
 .TP
-.B --output-VLC-satip
+.B -V, --output-VLC-satip
 generate VLC xspf playlist for SAT>IP instead of VDR channels.conf
 .TP
 .B -M, --output-mplayer
@@ -201,6 +201,12 @@ generate w_scan XML tuning data instead of VDR channels.conf
 .B -Y <FILENAME>, --output-dat <FILENAME>
 generate channels.dat for SAT>IP DvbViewer Lite
 .TP
+.B -F <VDR-CHANNEL>, --femon <VDR-CHANNEL>
+tune to a channel in VDR syntax and report signal status.
+.br
+For details about VDR channel syntax, see
+.BR vdr (5)
+.TP
 .B -H, --extended-help
 view extended help (experts only)
 .SH "EXPERT OPTIONS"
@@ -218,7 +224,7 @@ be more verbose (repeat for more)
 be more quiet   (repeat for less)
 .SH "*** Services ***"
 .TP
-.B --sort-criteria FILE
+.B -C FILE, --sort-criteria FILE
 sort services in sequence, as given by FILE.
 .br
 FILE is a text file, each line gives the name of a service,
@@ -363,7 +369,7 @@ N = 0..15
 .B -r N, --rotor-position N
 use Rotor position N (needs -s)
 .TP
-.B --rotor-usals PARAMLIST
+.B -U PARAMLIST, --rotor-usals PARAMLIST
 .br
 where PARAMLIST is Lat:Long:Speed:Swing
 .br
