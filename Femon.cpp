@@ -115,7 +115,6 @@ int SignalMonitor(cDevice* Device, std::string& Channel) {
         if (result & ber_available)
            s += "ber " + ExpToStr(BER);
 
-        Message("\e[A");
         Message(s);
         Sleep(1000);
         }
