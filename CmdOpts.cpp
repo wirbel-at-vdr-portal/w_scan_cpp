@@ -229,9 +229,9 @@ bool ParseArguments(int argc, char* argv[]) {
            }
         }
      else if ((Argument == "-F") or (Argument == "--femon")) {
+        OutputFormat = "FEMON";
         if (not Param.empty()) {
            WirbelscanSetup.FemonChannel = Param;
-           OutputFormat = "FEMON";
            i++;
            }
         else {
@@ -239,7 +239,6 @@ bool ParseArguments(int argc, char* argv[]) {
            return false;
            }
         }
-
      else if ((Argument == "-v") or (Argument == "--verbose"))
         WirbelscanSetup.verbosity++;
      else if ((Argument == "-q") or (Argument == "--quiet"))
@@ -439,6 +438,9 @@ bool HelpText(std::string ProgName) {
   ss << "               generate w_scan XML tuning data" << std::endl;
   ss << "       -Y <FILENAME>, --output-dat <FILENAME>" << std::endl;
   ss << "               generate channels.dat for SAT>IP DvbViewer Lite" << std::endl;
+  ss << "       -F <VDR_Channel>, --femon <VDR_Channel>" << std::endl;
+  ss << "               monitor signal lock, strength and quality" << std::endl;
+  ss << "               of a given channel in VDR format" << std::endl;
   ss << "       -H, --extended-help" << std::endl;
   ss << "               view extended help (experts only)" << std::endl;
   std::cout << ss.str();
