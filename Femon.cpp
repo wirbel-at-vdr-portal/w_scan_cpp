@@ -100,7 +100,7 @@ int SignalMonitor(cDevice* Device, std::string& Channel) {
 
         if (result & strength_available)
            s += "signal " + FloatToStr(SignalLevel_dBm + 108.75, 2) + "dBuV | ";
-        else if (HasLock) {
+        else if (satip == nullptr) {
            i = Device->SignalStrength();
            if (i >= 0 and i <= 100)
               s += "signal " + std::to_string(i) + "% | ";
