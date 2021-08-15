@@ -157,8 +157,8 @@ int SignalMonitor(cDevice* Device, std::string& Channel) {
             * to 0.0dBm (a very large value in terms of signal),
             * see https://github.com/rofafor/vdr-plugin-satip/issues/80
             */
-           if (SignalLevel_dBm > -18.5)           
-              result &= ~strength_available;        
+           if (SignalLevel_dBm > -18.5)
+              result &= ~strength_available;
            }
 
         if (HasLock)
