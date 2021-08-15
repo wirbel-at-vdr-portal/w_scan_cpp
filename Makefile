@@ -309,6 +309,8 @@ Version.h:
 	@echo "const std::string version = \"$(VERSION)\";" >> Version.h
 	@$(CHMOD) a-x Version.h
 
+version: Version.h
+
 dist: Version.h mrproper
 	@-$(RM) -rf $(tmpdir)/$(PACKAGE)
 	@$(MKDIR_P) $(tmpdir)/$(PACKAGE)

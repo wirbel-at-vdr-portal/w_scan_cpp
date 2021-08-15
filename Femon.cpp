@@ -45,6 +45,60 @@ void cData::Activate(bool On) {
 
 
 /*******************************************************************************
+ * signal strength hints
+ ******************************************************************************/
+
+std::string StrengthHint(cChannel& Channel, double Strength) {
+  std::string s;
+  double min = -1e9, max = 1e9;
+  char src = Channel.Source() >> 24;
+  int mod = cDvbTransponderParameters(Channel.Parameters()).Modulation();
+  int sys = cDvbTransponderParameters(Channel.Parameters()).System();
+
+  switch(src) {
+     case 'A':
+        break;
+     case 'C': {
+        switch(mod) {
+           case 3:  /* M64  */ min = 47, max = 67; break;
+           case 4:  /* M128 */ min = 51, max = 71; break;
+           case 5:  /* M256 */ min = 54, max = 74; break;
+           default:;
+           }
+        }
+        break;
+     case 'S':
+        min = 47, max = 77; /* any */
+        break;
+     case 'T':
+        if (sys == 0)
+           switch(mod) {
+              case 0:  /* M4   */ min = 33, max = 74; break;
+              case 1:  /* M16  */ min = 36, max = 74; break;
+              case 3:  /* M64  */ min = 45, max = 74; break;
+              default:;
+              }
+        else
+           switch(mod) {
+              case 0:  /* M4   */ min = 33, max = 74; break;
+              case 1:  /* M16  */ min = 35, max = 74; break;
+              case 3:  /* M64  */ min = 39, max = 74; break;
+              case 5:  /* M256 */ min = 43, max = 74; break;
+              default:;
+              }
+        break;
+     default:;
+     }
+
+  return Strength <  min      ? "(too low)"    :
+         Strength >  max      ? "(too high)"   :
+         Strength < (min + 6) ? "(a bit low)"  :
+         Strength > (max -3)  ? "(a bit high)" :
+         "";
+}
+
+
+/*******************************************************************************
  * SignalMonitor(), print femon-like signal stats.
  ******************************************************************************/
 
@@ -81,39 +135,60 @@ int SignalMonitor(cDevice* Device, std::string& Channel) {
 
      for(;;) {
         double SignalLevel_dBm, CNR_dB, BER;
-        int result = 0, DemodState, i;
+        int result = 0, DemodState, i, SignalLevel_rel;
+        bool HasLock;
         std::string s;
 
         if (not Device->SignalStats(result, &SignalLevel_dBm, &CNR_dB, nullptr, &BER, nullptr, &DemodState))
            result = 0;
 
-        bool HasLock = (result & status_available) ? (DemodState & 0x10) > 0 : Device->HasLock();
+        HasLock         = (result & status_available  ) ? (DemodState & 0x10) > 0 : Device->HasLock();
+        SignalLevel_rel = (result & strength_available) ? 0                       : Device->SignalStrength();
 
-        if ((satip != nullptr) and ((SignalLevel_dBm >= 0) or (SignalLevel_dBm < -71.5)))
-           result &= ~strength_available;
+        if (satip) {
+           /* Bug in satip plugin, plugin reports "no signal" as -71.67dBm,
+            * where it should be "no signal" (not to be reported),
+            * see https://github.com/rofafor/vdr-plugin-satip/issues/80
+            */
+           if (SignalLevel_dBm < -71.5)
+              result &= ~strength_available;
 
-        s = "lock ";
-        if (HasLock)
-           s += "1 | ";
-        else
-           s += "0 | ";
-
-        if (result & strength_available)
-           s += "signal " + FloatToStr(SignalLevel_dBm + 108.75, 2) + "dBuV | ";
-        else if (satip == nullptr) {
-           i = Device->SignalStrength();
-           if (i >= 0 and i <= 100)
-              s += "signal " + std::to_string(i) + "% | ";
+           /* Bug in satip plugin, plugin initializes tuners cached dBm value
+            * to 0.0dBm (a very large value in terms of signal),
+            * see https://github.com/rofafor/vdr-plugin-satip/issues/80
+            */
+           if (SignalLevel_dBm > -18.5)           
+              result &= ~strength_available;        
            }
 
-        if ((i = Device->SignalQuality()) > -1)
-           s += "quality " + std::to_string(i) + "% | ";
+        if (HasLock)
+           s = "lock 1 | ";
+        else
+           s = "lock 0 | ";
 
-        if (result & cnr_available)
-           s += "snr " + FloatToStr(CNR_dB, 2) + "dB | ";
+        if (result & strength_available)
+           s += "signal " + FloatToStr(SignalLevel_dBm + 108.75, 2) + "dBuV " +
+                StrengthHint(aChannel, SignalLevel_dBm + 108.75) + " | ";
+        else
+           if (SignalLevel_rel > -1)
+              s += "signal " + IntToStr(SignalLevel_rel) + "% | ";
 
-        if (result & ber_available)
-           s += "ber " + ExpToStr(BER);
+        /* w/o lock, demods may not report valid stats for
+         * quality, cnr, ber
+         */
+        if (HasLock) {
+           if ((i = Device->SignalQuality()) > -1)
+              s += "quality " + IntToStr(i) + "% | ";
+
+           if (result & cnr_available)
+              s += "snr " + FloatToStr(CNR_dB, 2) + "dB | ";
+
+           if (result & ber_available) {
+              s += "ber " + ExpToStr(BER);
+              if (BER > 1e-4)
+                 s += " (too high)";
+              }
+           }
 
         Message(s);
         Sleep(1000);

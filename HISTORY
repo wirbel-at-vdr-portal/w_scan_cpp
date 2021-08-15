@@ -86,9 +86,11 @@
      - add missing </vlc:option> after Sat plp-id
    - add PrintVLCsatip
 
-20210xxx:
+20210815:
 -------------------------------------------------------------------------------
 * Helpers.{h,cpp}
    - add functions FloatToStr, ExpToStr
 * Femon.{h,cpp}, CmdOpts.{h,cpp}, doc/w_scan_cpp.1
-   - add new option --femon
+   - add new option --femon <VDR_CHANNEL>
+* Makefile
+   - add version target

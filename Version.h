@@ -2,4 +2,4 @@
 #include <string>
 /* AUTOMATICALLY GENERATED - DO NOT EDIT MANUALLY */
 
-const std::string version = "20210807";
+const std::string version = "20210815";
