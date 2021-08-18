@@ -20,7 +20,7 @@ void InitSatellites(cPlugin* wirbelscan) {
   while(std::getline(ss, line)) {
      auto items = split(line, ':');
      if (items.size() != 3) continue;
-     SatIdValues.push_back  (items[1]);
+     SatIdValues.push_back(items[1]);
      SatNames.push_back(items[2]);
      }
 }
