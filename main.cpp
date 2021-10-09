@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
      for(int i=0; (i < 5) and not SVDRP(satip, "LIST", Reply); i++) {
         SVDRP(satip, "SCAN", Reply);
         Message(Reply);
-        Sleep(3000);
+        milliSleep(3000);
         }
      for(auto line:split(Reply, '\n')) {
         if (not ParseSatipServer(line))
@@ -143,7 +143,7 @@ int main(int argc, char* argv[]) {
   bool Continue = StartScan();
 
   while(Continue) {
-     Sleep(500);
+     milliSleep(500);
      Continue = Scanning();
      }
 

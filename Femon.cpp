@@ -34,7 +34,7 @@ void cData::Receive(const uchar* Data, int Length) {
 
 void cData::Action(void) {
   while(Running())
-     Sleep(100);
+     milliSleep(100);
 };
 
 void cData::Activate(bool On) {
@@ -126,7 +126,7 @@ int SignalMonitor(cDevice* Device, std::string& Channel) {
   for(;;) {
      if (not Device->SwitchChannel(&aChannel, false)) {
         Message("tuning failed - try again..");
-        Sleep(1000);
+        milliSleep(1000);
         continue;
         }
 
@@ -191,7 +191,7 @@ int SignalMonitor(cDevice* Device, std::string& Channel) {
            }
 
         Message(s);
-        Sleep(1000);
+        milliSleep(1000);
         }
 
      delete data;

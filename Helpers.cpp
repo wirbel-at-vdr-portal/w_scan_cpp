@@ -61,7 +61,7 @@ std::string IntToStr(int64_t n, size_t Zeros) {
   return ToString("%lld", (long long) n);
 }
 
-std::string IntToHex(uint64_t n, size_t Digits) {
+std::string IntToHex(int64_t n, size_t Digits) {
   return ToString("0x%.0" + std::to_string(Digits) + "llX", (long long) n);
 }
 
@@ -101,7 +101,7 @@ std::string VdrSource(std::string s) {
   return s + c;
 }
 
-void Sleep(size_t msec) {
+void milliSleep(size_t msec) {
   std::this_thread::sleep_for(std::chrono::milliseconds(msec));
 }
 

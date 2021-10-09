@@ -34,7 +34,7 @@ CXX = @g++
 
 
 CFLAGS    = -g -O3 -fPIC -Werror=overloaded-virtual
-CXXFLAGS  = -g -O3 -fPIC -Wall -Wextra -Werror=overloaded-virtual -Wfatal-errors
+CXXFLAGS  = -g -O3 -fPIC -Wall -Wextra -Werror=overloaded-virtual -Wno-unused-parameter -Wfatal-errors
 
 
 
@@ -194,7 +194,7 @@ LDFLAGS  ?= -L$(srcdir) -L$(vdrdir) -L$(vdrlibsidir)
 SOURCES           := $(wildcard $(srcdir)/*.cpp)
 VDR_SOURCES       := $(shell find $(vdrdir)  -maxdepth 1 ! -name "vdr.c" -name "*.c" 2>/dev/null)
 LIBSI_SOURCES     := $(wildcard $(vdrlibsidir)/*.c)
-WIRBELSCAN_SOURCES = $(wildcard $(pluginsrcdir)/wirbelscan/*.c)
+WIRBELSCAN_SOURCES = $(wildcard $(pluginsrcdir)/wirbelscan/*.cpp)
 SATIP_SOURCES      = $(wildcard $(pluginsrcdir)/satip/*.c)
 
 
@@ -202,7 +202,7 @@ SATIP_SOURCES      = $(wildcard $(pluginsrcdir)/satip/*.c)
 OBJS            = $(SOURCES:.cpp=.o)
 VDR_OBJS        = $(VDR_SOURCES:.c=.o)
 LIBSI_OBJS      = $(LIBSI_SOURCES:.c=.o)
-WIRBELSCAN_OBJS = $(WIRBELSCAN_SOURCES:.c=.o)
+WIRBELSCAN_OBJS = $(WIRBELSCAN_SOURCES:.cpp=.o)
 SATIP_OBJS      = $(SATIP_SOURCES:.c=.o)
 
 
@@ -339,6 +339,8 @@ printvars:
 	@echo "BINARY             = $(BINARY)"
 	@echo "package_name       = $(package_name)"
 	@echo "WIRBELSCAN_VERSION = $(WIRBELSCAN_VERSION)"
+	@echo "WIRBELSCAN_SOURCES = $(WIRBELSCAN_SOURCES)"
+	@echo "WIRBELSCAN_OBJS    = $(WIRBELSCAN_OBJS)"
 	@echo "SATIP_GIT_ADDR     = $(SATIP_GIT_ADDR)"
 	@echo "CC                 = $(CC)"
 	@echo "CXX                = $(CXX)"

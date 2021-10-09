@@ -94,3 +94,16 @@
    - add new option --femon <VDR_CHANNEL>
 * Makefile
    - add version target
+
+20211009:
+-------------------------------------------------------------------------------
+* main.cpp, Femon.cpp
+   - rename Sleep to milliSleep
+* helpers.{h,cpp}
+   - rename Sleep to milliSleep
+   - IntToHex now gets a int64_t
+* CmdOpts.cpp
+   - args -c, --country, -s, --satellite are now case insensitive,
+     to improve compat to my ancient w_scan syntax.
+* Makefile
+   - prepare for upcoming next wirbelscan version

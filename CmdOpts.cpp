@@ -180,11 +180,13 @@ bool ParseArguments(int argc, char* argv[]) {
         else if (Param == "3") WirbelscanSetup.ATSC_type = 2;
         }
      else if ((Argument == "-c") or (Argument == "--country")) {
+        Param = UpperCase(Param);
         PARAM("?," + CountryArgs());
         if      (Param == "?") return PrintCountries();
         else    WirbelscanSetup.CountryIndex = GetCountryId(Param);
         }
      else if ((Argument == "-s") or (Argument == "--satellite")) {
+        Param = UpperCase(Param);
         PARAM("?," + SatArgs());
         if      (Param == "?") return PrintSatellites();
         else {
