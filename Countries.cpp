@@ -4,6 +4,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *****************************************************************************/
+#include <sstream>
 #include "Countries.h"
 #include "Helpers.h"
 #include "CmdOpts.h"
@@ -19,7 +20,7 @@ void InitCountries(cPlugin* wirbelscan) {
 
   ss << *wirbelscan->SVDRPCommand("LSTC", nullptr, code);
   while(std::getline(ss, line)) {
-     auto items = split(line, ':');
+     auto items = SplitStr(line, ':');
      if (items.size() != 3) continue;
      CountryIdValues.push_back  (items[1]);
      CountryNames.push_back(items[2]);

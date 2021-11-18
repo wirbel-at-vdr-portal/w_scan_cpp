@@ -95,7 +95,7 @@ int DiseqcRotorPosition(void) {
 void DiseqcRotorUsals(int LnbLo, int LnbHi, int LnbSLOF, std::string Params) {
   int item = 0;
 
-  for(auto s:split(Params,':')) {
+  for(auto s:SplitStr(Params,':')) {
      if (s.empty() or (s.find_first_not_of("0123456789") != std::string::npos)) {
         std::cerr << "invalid USALS data" << std::endl;
         return;
@@ -138,7 +138,7 @@ void DiseqcScr(std::string Source, int LnbLo, int LnbHi, int LnbSLOF, std::strin
   bool jess = false;
 
 
-  for(auto s:split(Params,':')) {
+  for(auto s:SplitStr(Params,':')) {
      switch(item++) {
         case 0: {
            if (s.empty() or (s.find_first_not_of("0123456789") != std::string::npos)) {

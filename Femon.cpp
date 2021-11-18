@@ -34,7 +34,7 @@ void cData::Receive(const uchar* Data, int Length) {
 
 void cData::Action(void) {
   while(Running())
-     milliSleep(100);
+     mSleep(100);
 };
 
 void cData::Activate(bool On) {
@@ -126,7 +126,7 @@ int SignalMonitor(cDevice* Device, std::string& Channel) {
   for(;;) {
      if (not Device->SwitchChannel(&aChannel, false)) {
         Message("tuning failed - try again..");
-        milliSleep(1000);
+        mSleep(1000);
         continue;
         }
 
@@ -167,7 +167,7 @@ int SignalMonitor(cDevice* Device, std::string& Channel) {
            s = "lock 0 | ";
 
         if (result & strength_available)
-           s += "signal " + FloatToStr(SignalLevel_dBm + 108.75, 2) + "dBuV " +
+           s += "signal " + FloatToStr(SignalLevel_dBm + 108.75, 5, 2, false) + "dBuV " +
                 StrengthHint(aChannel, SignalLevel_dBm + 108.75) + " | ";
         else
            if (SignalLevel_rel > -1)
@@ -181,7 +181,7 @@ int SignalMonitor(cDevice* Device, std::string& Channel) {
               s += "quality " + IntToStr(i) + "% | ";
 
            if (result & cnr_available)
-              s += "snr " + FloatToStr(CNR_dB, 2) + "dB | ";
+              s += "snr " + FloatToStr(CNR_dB, 4, 2, false) + "dB | ";
 
            if (result & ber_available) {
               s += "ber " + ExpToStr(BER);
@@ -191,7 +191,7 @@ int SignalMonitor(cDevice* Device, std::string& Channel) {
            }
 
         Message(s);
-        milliSleep(1000);
+        mSleep(1000);
         }
 
      delete data;

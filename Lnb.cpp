@@ -4,6 +4,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *****************************************************************************/
+#include <sstream>
 #include "Helpers.h"
 #include "Lnb.h"
 
@@ -32,7 +33,7 @@ bool SetLnb(std::string lnb) {
      Setup.LnbFrequLo = 0;
      Setup.LnbFrequHi = 0;
      Setup.LnbSLOF    = 0;
-     auto it = split(lnb, ',');
+     auto it = SplitStr(lnb, ',');
      for(size_t i = 0; i < it.size(); i++) {
         switch(i) {
            case 0: Setup.LnbFrequLo = std::stol(it[i]); break;

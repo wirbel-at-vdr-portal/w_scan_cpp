@@ -41,7 +41,7 @@ std::string LibSatip     (PlugPath + "libvdr-satip_cmd.so."      + std::string(A
 
 bool CheckParam(std::string& Param, std::string Values, size_t& i) {
   bool valid = false;
-  for(auto s:split(Values,',')) if (Param == s) { valid = true; i++; break; }
+  for(auto s:SplitStr(Values,',')) if (Param == s) { valid = true; i++; break; }
   return valid;
 }
 
@@ -328,7 +328,7 @@ bool ParseArguments(int argc, char* argv[]) {
         RotorPosition = std::stol(Param);
         }
      else if ((Argument == "-U") or (Argument == "--rotor-usals")) {
-        auto l = split(Param,':');
+        auto l = SplitStr(Param,':');
         if (l.size() != 4) {
            ErrorMessage("invalid parameter '" + Param + "' - wrong number of items.");
            return false;
@@ -343,7 +343,7 @@ bool ParseArguments(int argc, char* argv[]) {
         }
      else if ((Argument == "-u") or (Argument == "--scr")) {
         std::string s(Param);
-        auto l = split(s,':');
+        auto l = SplitStr(s,':');
         if (l.size() == 3) {
            Param = l[0]; PARAM(IntRange(0, 31));     --i;
            Param = l[1]; PARAM(IntRange(950, 2150)); --i;
@@ -579,7 +579,7 @@ bool ExtHelpText(std::string ProgName) {
 }
 
 bool ParseSatipServer(std::string s) {
-  auto items = split(s, '|');
+  auto items = SplitStr(s, '|');
 
   if ((s.find('+') != 0) or (items.size() != 3))
      return false;

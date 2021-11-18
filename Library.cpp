@@ -74,7 +74,7 @@ Library::Library(std::string FileName, std::string Arguments)
   #endif
 
 
-  args = split(Arguments, ';');
+  args = SplitStr(Arguments, ';');
   args.insert(args.begin(), FileName);
   for(auto s:args)
      argv.push_back((char*) s.c_str());

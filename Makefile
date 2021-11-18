@@ -184,6 +184,7 @@ DEFINES  += -DAPIVERSION='"$(APIVERSION)"'
 DEFINES  += -DSTATIC_PLUGINS
 LIBS      = -ljpeg -lpthread -lcap -ldl -lrt $(shell $(PKG_CONFIG) --libs freetype2 fontconfig)
 LIBS     += $(shell curl-config --libs) -lpugixml
+LIBS     += -lrepfunc
 INCLUDES  = -I$(srcdir)
 INCLUDES += -I$(vdrdir)
 INCLUDES += -I$(pluginsrcdir)

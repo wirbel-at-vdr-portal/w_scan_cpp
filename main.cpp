@@ -70,9 +70,9 @@ int main(int argc, char* argv[]) {
      for(int i=0; (i < 5) and not SVDRP(satip, "LIST", Reply); i++) {
         SVDRP(satip, "SCAN", Reply);
         Message(Reply);
-        milliSleep(3000);
+        mSleep(3000);
         }
-     for(auto line:split(Reply, '\n')) {
+     for(auto line:SplitStr(Reply, '\n')) {
         if (not ParseSatipServer(line))
            continue;
         break;
@@ -143,7 +143,7 @@ int main(int argc, char* argv[]) {
   bool Continue = StartScan();
 
   while(Continue) {
-     milliSleep(500);
+     mSleep(500);
      Continue = Scanning();
      }
 
@@ -153,7 +153,7 @@ int main(int argc, char* argv[]) {
      auto Elapsed = std::chrono::duration_cast<std::chrono::seconds>(Stop - Start).count();
 
      Message(std::to_string(data.size()) + " services. scan time: " +
-             IntToStr(Elapsed / 60, 2) + ":" + IntToStr(Elapsed % 60, 2));
+             IntToStr(Elapsed / 60, 2, false, '0') + ":" + IntToStr(Elapsed % 60, 2, false, '0'));
 
      if      (OutputFormat == "VDR")            PrintVDR(data);
      else if (OutputFormat == "INI")            PrintIni(data);
