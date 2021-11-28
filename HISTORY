@@ -107,3 +107,35 @@
      to improve compat to my ancient w_scan syntax.
 * Makefile
    - prepare for upcoming next wirbelscan version
+
+20211128:
+-------------------------------------------------------------------------------
+* Makefile
+   - check librepfunc availability and version, link to it.
+     Requires now at least librepfunc-1.1.0,
+     see https://github.com/wirbel-at-vdr-portal/librepfunc
+* CmdOpts.cpp
+   - replace split() by librepfunc SplitStr()
+* Countries.cpp
+   - replace split() by librepfunc SplitStr()
+* Femon.cpp
+   - replace milliSleep() by librepfunc mSleep()
+   - use FloatToStr() from librepfunc
+* Helpers.{h,cpp}
+   - remove split(), LowerCase(), UpperCase(), FrontFill(), BackFill(),
+     ToString(), IntToStr(), IntToHex(), FloatToStr(), ExpToStr(),
+     milliSleep(), ReadFile(), class cFileList, class File and use
+     librepfunc instead.
+* Library.cpp
+   - replace split() by librepfunc SplitStr()
+* Lnb.cpp
+   - replace split() by librepfunc SplitStr()
+   - fix C-Band and C-Band Multi LNB lower frequency range in comments
+* main.cpp
+   - replace split() by librepfunc SplitStr()
+   - replace milliSleep() by librepfunc mSleep()
+   - replace IntToStr() by librepfunc IntToStr()
+* OutputFormats.cpp
+   - replace std::to_string() by IntToStr()   
+* bump wirbelscan version to 20211128
+* bump version to 20211128

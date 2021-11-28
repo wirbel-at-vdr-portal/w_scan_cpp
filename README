@@ -25,6 +25,10 @@ It uses (and therefore links to and includes part of)
       https://www.gen2vdr.de/wirbel/wirbelscan/index2.html
       as the actual 'DTV channel scanner' itself.
 
+   4. librepfunc from
+      https://github.com/wirbel-at-vdr-portal/librepfunc
+      This is a set of tools and functions which i use in all my projects.
+
 NOTE:
 As all of the related third party code is GPL v2, w_scan_cpp is also GPL v2.
 
@@ -50,7 +54,7 @@ source package, see chapter 1.
 - GNU sed
 - git
 - internet connection for command 'make download'
-- librepfunc >= 1.1.0
+- librepfunc >= 1.1.0 (https://github.com/wirbel-at-vdr-portal/librepfunc)
 
 
 debian/ubuntu users, the package names are

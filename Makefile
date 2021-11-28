@@ -6,7 +6,7 @@
 # *****************************************************************************/
 BINARY = w_scan_cpp
 
-WIRBELSCAN_VERSION = wirbelscan-2021.10.09
+WIRBELSCAN_VERSION = wirbelscan-2021.11.28
 
 # original git repo seems to be stale.
 #SATIP_GIT_ADDR = https://github.com/rofafor/vdr-plugin-satip
@@ -24,6 +24,17 @@ SATIP_GIT_ADDR = https://github.com/wirbel-at-vdr-portal/vdr-plugin-satip.git
 package_name ?= $(BINARY)
 
 
+
+#/******************************************************************************
+# * dependencies, add variables here, and checks in target check_dependencies
+# *****************************************************************************/
+LIBREPFUNC=librepfunc
+LIBREPFUNC_MINVERSION=1.1.0
+
+
+# /* require either PKG_CONFIG_PATH to be set, or, a working pkg-config */
+HAVE_LIBREPFUNC           =$(shell if pkg-config --exists                                   $(LIBREPFUNC); then echo "1"; else echo "0"; fi )
+HAVE_LIBREPFUNC_MINVERSION=$(shell if pkg-config --atleast-version=$(LIBREPFUNC_MINVERSION) $(LIBREPFUNC); then echo "1"; else echo "0"; fi )
 
 
 
@@ -184,13 +195,14 @@ DEFINES  += -DAPIVERSION='"$(APIVERSION)"'
 DEFINES  += -DSTATIC_PLUGINS
 LIBS      = -ljpeg -lpthread -lcap -ldl -lrt $(shell $(PKG_CONFIG) --libs freetype2 fontconfig)
 LIBS     += $(shell curl-config --libs) -lpugixml
-LIBS     += -lrepfunc
+LIBS     += $(shell pkg-config --libs-only-l $(LIBREPFUNC))
 INCLUDES  = -I$(srcdir)
 INCLUDES += -I$(vdrdir)
 INCLUDES += -I$(pluginsrcdir)
+INCLUDES += $(shell pkg-config --cflags-only-I $(LIBREPFUNC))
 INCLUDES +=  $(shell $(PKG_CONFIG) --cflags freetype2 fontconfig)
 LDFLAGS  ?= -L$(srcdir) -L$(vdrdir) -L$(vdrlibsidir)
-
+LDFLAGS  += $(shell pkg-config --libs-only-L $(LIBREPFUNC))
 
 
 
@@ -251,7 +263,7 @@ ifeq ($(CXX),@g++)
 endif
 	$(CXX) $(CXXFLAGS) -c $(DEFINES) -DDISABLE_TEMPLATES_COLLIDING_WITH_STL $(INCLUDES) -o $@ $<
 
-all: $(LIBSI_OBJS) $(VDR_OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(OBJS)
+all: check_dependencies $(LIBSI_OBJS) $(VDR_OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(OBJS)
 ifeq ($(CXX),@g++)
 	@echo -e "${GN} LINK $(BINARY)${RST}"
 endif
@@ -270,7 +282,7 @@ uninstall:
 	$(RM) -rf $(DESTDIR)$(docdir)
 	$(RM) -f $(DESTDIR)$(man1dir)/w_scan_cpp.1
 
-.PHONY: download
+.PHONY: download check_dependencies
 download: $(vdrdir) $(pluginsrcdir)/satip $(pluginsrcdir)/wirbelscan
 	#@$(CXX) -std=c++11 MakeHeader.cc -o MakeHeader.bin
 	#@$(srcdir)/MakeHeader.bin $(pluginsrcdir)/satip/
@@ -335,6 +347,21 @@ binary: $(BINARY)
 	@-$(RM) -rf $(tmpdir)/$(PACKAGE)
 	@echo binary package created as $(PACKAGE)-binary-$(MACHINE).tar.bz2
 
+
+#/******************************************************************************
+# * dependencies, check them here and provide message to user.
+# *****************************************************************************/
+check_dependencies:
+ifeq ($(HAVE_LIBREPFUNC),0)
+	@echo "ERROR: not found: $(LIBREPFUNC) >= $(LIBREPFUNC_MINVERSION)"
+	exit 1
+endif
+ifeq ($(HAVE_LIBREPFUNC_MINVERSION),0)
+	@echo "ERROR: dependency $(LIBREPFUNC) older than $(LIBREPFUNC_MINVERSION)"
+	exit 1
+endif
+
+
 #/******************************************************************************
 # * debug
 # *****************************************************************************/
@@ -345,6 +372,8 @@ printvars:
 	@echo "WIRBELSCAN_SOURCES = $(WIRBELSCAN_SOURCES)"
 	@echo "WIRBELSCAN_OBJS    = $(WIRBELSCAN_OBJS)"
 	@echo "SATIP_GIT_ADDR     = $(SATIP_GIT_ADDR)"
+	@echo "HAVE_LIBREPFUNC    = $(HAVE_LIBREPFUNC)"
+	@echo "HAVE_LIBREPFUNC_MINVERSION = $(HAVE_LIBREPFUNC_MINVERSION)"
 	@echo "CC                 = $(CC)"
 	@echo "CXX                = $(CXX)"
 	@echo "CFLAGS             = $(CFLAGS)"
