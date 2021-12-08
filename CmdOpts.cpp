@@ -139,6 +139,7 @@ bool ParseArguments(int argc, char* argv[]) {
      }
 
   WirbelscanDefaults();
+  Diseqcs.Load(nullptr);
 
   // accept short args w/o space in between
   for(int i=1; i<argc; i++) {
