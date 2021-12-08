@@ -28,15 +28,20 @@ package_name ?= $(BINARY)
 #/******************************************************************************
 # * dependencies, add variables here, and checks in target check_dependencies
 # *****************************************************************************/
+LIBJPEG=libjpeg
+FREETYPE2=freetype2
+FONTCONFIG=fontconfig
+LIBPUGIXML=pugixml
 LIBREPFUNC=librepfunc
 LIBREPFUNC_MINVERSION=1.1.0
 
-
 # /* require either PKG_CONFIG_PATH to be set, or, a working pkg-config */
+HAVE_LIBJPEG              =$(shell if pkg-config --exists                                   $(LIBJPEG);    then echo "1"; else echo "0"; fi )
+HAVE_FREETYPE2            =$(shell if pkg-config --exists                                   $(FREETYPE2);  then echo "1"; else echo "0"; fi )
+HAVE_FONTCONFIG           =$(shell if pkg-config --exists                                   $(FONTCONFIG); then echo "1"; else echo "0"; fi )
+HAVE_LIBPUGIXML           =$(shell if pkg-config --exists                                   $(LIBPUGIXML); then echo "1"; else echo "0"; fi )
 HAVE_LIBREPFUNC           =$(shell if pkg-config --exists                                   $(LIBREPFUNC); then echo "1"; else echo "0"; fi )
 HAVE_LIBREPFUNC_MINVERSION=$(shell if pkg-config --atleast-version=$(LIBREPFUNC_MINVERSION) $(LIBREPFUNC); then echo "1"; else echo "0"; fi )
-
-
 
 
 #/******************************************************************************
@@ -194,14 +199,19 @@ DEFINES   = -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFIL
 DEFINES  += -DAPIVERSION='"$(APIVERSION)"'
 DEFINES  += -DSTATIC_PLUGINS
 LIBS      = -ljpeg -lpthread -lcap -ldl -lrt $(shell $(PKG_CONFIG) --libs freetype2 fontconfig)
-LIBS     += $(shell curl-config --libs) -lpugixml
+LIBS     += $(shell curl-config --libs)
+LIBS     += $(shell pkg-config --libs-only-l $(LIBPUGIXML))
 LIBS     += $(shell pkg-config --libs-only-l $(LIBREPFUNC))
 INCLUDES  = -I$(srcdir)
 INCLUDES += -I$(vdrdir)
 INCLUDES += -I$(pluginsrcdir)
+INCLUDES += $(shell pkg-config --cflags-only-I $(LIBJPEG))
+INCLUDES += $(shell pkg-config --cflags-only-I $(LIBPUGIXML))
 INCLUDES += $(shell pkg-config --cflags-only-I $(LIBREPFUNC))
-INCLUDES +=  $(shell $(PKG_CONFIG) --cflags freetype2 fontconfig)
+INCLUDES += $(shell $(PKG_CONFIG) --cflags freetype2 fontconfig)
 LDFLAGS  ?= -L$(srcdir) -L$(vdrdir) -L$(vdrlibsidir)
+LDFLAGS  += $(shell pkg-config --libs-only-L $(LIBJPEG))
+LDFLAGS  += $(shell pkg-config --libs-only-L $(LIBPUGIXML))
 LDFLAGS  += $(shell pkg-config --libs-only-L $(LIBREPFUNC))
 
 
@@ -352,14 +362,32 @@ binary: $(BINARY)
 # * dependencies, check them here and provide message to user.
 # *****************************************************************************/
 check_dependencies:
+ifeq ($(HAVE_LIBJPEG),0)
+	@echo "ERROR: dependency not found: $(LIBJPEG)"
+	exit 1
+endif
+ifeq ($(HAVE_FREETYPE2),0)
+	@echo "ERROR: dependency not found: $(FREETYPE2)"
+	exit 1
+endif
+ifeq ($(HAVE_FONTCONFIG),0)
+	@echo "ERROR: dependency not found: $(FONTCONFIG)"
+	exit 1
+endif
+ifeq ($(HAVE_LIBPUGIXML),0)
+	@echo "ERROR: dependency not found: $(LIBPUGIXML)"
+	exit 1
+endif
 ifeq ($(HAVE_LIBREPFUNC),0)
-	@echo "ERROR: not found: $(LIBREPFUNC) >= $(LIBREPFUNC_MINVERSION)"
+	@echo "ERROR: dependency not found: $(LIBREPFUNC) >= $(LIBREPFUNC_MINVERSION)"
 	exit 1
 endif
 ifeq ($(HAVE_LIBREPFUNC_MINVERSION),0)
 	@echo "ERROR: dependency $(LIBREPFUNC) older than $(LIBREPFUNC_MINVERSION)"
 	exit 1
 endif
+
+
 
 
 #/******************************************************************************
@@ -372,6 +400,10 @@ printvars:
 	@echo "WIRBELSCAN_SOURCES = $(WIRBELSCAN_SOURCES)"
 	@echo "WIRBELSCAN_OBJS    = $(WIRBELSCAN_OBJS)"
 	@echo "SATIP_GIT_ADDR     = $(SATIP_GIT_ADDR)"
+	@echo "HAVE_LIBJPEG       = $(HAVE_LIBJPEG)"
+	@echo "HAVE_FREETYPE2     = $(HAVE_FREETYPE2)"
+	@echo "HAVE_FONTCONFIG    = $(HAVE_FONTCONFIG)"
+	@echo "HAVE_LIBPUGIXML    = $(HAVE_LIBPUGIXML)"
 	@echo "HAVE_LIBREPFUNC    = $(HAVE_LIBREPFUNC)"
 	@echo "HAVE_LIBREPFUNC_MINVERSION = $(HAVE_LIBREPFUNC_MINVERSION)"
 	@echo "CC                 = $(CC)"
