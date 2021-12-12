@@ -316,7 +316,7 @@ bool ParseArguments(int argc, char* argv[]) {
            i++;
            }
         else {
-           PARAM("UNIVERSAL,DBS,STANDARD,ENHANCED,C-BAND,C-MULTI,AUSTRALIA");
+           PARAM("?,UNIVERSAL,DBS,STANDARD,ENHANCED,C-BAND,C-MULTI,AUSTRALIA");
            if (not SetLnb(Param)) return true;
            }
         }
