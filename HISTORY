@@ -137,5 +137,19 @@
    - replace IntToStr() by librepfunc IntToStr()
 * OutputFormats.cpp
    - replace std::to_string() by IntToStr()   
-* bump wirbelscan version to 20211128
+* bump wirbelscan version to 2021.11.28
 * bump version to 20211128
+
+20211212:
+-------------------------------------------------------------------------------
+* Makefile
+   - add dependency checks for libjpeg, freetype2, fontconfig, pugixml
+* CmdOpts.cpp
+   - fix diseqc, initializing vdr/diseqc.c:CurrentDevices, without this change
+     any diseqc use was broken in w_scan_cpp
+* bump wirbelscan version to 2021.12.11
+* CmdOpts.cpp, Lnb.cpp
+   - commandline option '-l?' for printing LNB options was incomplete.
+     Fixing it.
+* bump version to 20211212
+
