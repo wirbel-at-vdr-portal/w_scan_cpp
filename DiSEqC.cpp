@@ -51,7 +51,7 @@ void DiseqcSwitchConfig(std::string Source, int LnbLo, int LnbHi, int LnbSLOF, s
         if (i & 1)  ss << FrontFill(std::to_string(LnbHi),6);   else ss << FrontFill(std::to_string(LnbLo),6);
         if (i & 2)  ss << FrontFill("t V",4);                   else ss << FrontFill(" t v",4);
         ss <<  " W15 [E0 10 39 F" << std::uppercase << std::hex << pos << std::nouppercase;
-        if (i & 1)  ss << "] W15 A W15 T";                      else ss << "] W15 A W15 t";
+        if (i & 1)  ss << "] W15 T";                            else ss << "] W15 t";
 
         cDiseqc* d = new cDiseqc;
         d->Parse(ss.str().c_str());
