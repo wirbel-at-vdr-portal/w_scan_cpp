@@ -6,7 +6,7 @@
 # *****************************************************************************/
 BINARY = w_scan_cpp
 
-WIRBELSCAN_VERSION = wirbelscan-2021.12.11
+WIRBELSCAN_VERSION = wirbelscan-2022.01.05
 
 # original git repo seems to be stale.
 #SATIP_GIT_ADDR = https://github.com/rofafor/vdr-plugin-satip
@@ -294,9 +294,6 @@ uninstall:
 
 .PHONY: download check_dependencies
 download: $(vdrdir) $(pluginsrcdir)/satip $(pluginsrcdir)/wirbelscan
-	#@$(CXX) -std=c++11 MakeHeader.cc -o MakeHeader.bin
-	#@$(srcdir)/MakeHeader.bin $(pluginsrcdir)/satip/
-	#@$(RM) -rf $(srcdir)/MakeHeader.bin
 
 $(vdrdir):
 	$(GIT) clone git://git.tvdr.de/vdr.git
