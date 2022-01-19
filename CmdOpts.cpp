@@ -123,6 +123,7 @@ bool ParseArguments(int argc, char* argv[]) {
   std::string Scr;
   std::string Source("S19.2E");
   int RotorPosition = 9999;
+  bool use_satip = false;
 
   size_t p = ProgName.find_last_of("/\\");
   if (p != std::string::npos)
@@ -163,10 +164,8 @@ bool ParseArguments(int argc, char* argv[]) {
         return HelpText(ProgName);
      else if ((Argument == "-H") or (Argument == "--extended-help"))
         return ExtHelpText(ProgName);
-     else if ((Argument == "-t") or (Argument == "--satip")) {
-        libs.push_back(new Library(LibSatip, ""));
-        satip = libs[1]->Plugin();
-        }
+     else if ((Argument == "-t") or (Argument == "--satip"))
+        use_satip = true;
      else if ((Argument == "-f") or (Argument == "--frontend")) {
         PARAM("a,c,s,t");
         if      (Param == "a") WirbelscanSetup.DVB_Type = 5;
@@ -269,6 +268,10 @@ bool ParseArguments(int argc, char* argv[]) {
         WirbelscanSetup.adapter = Param;
         i++;
         }
+     else if (Argument == "--satip-server") {
+        WirbelscanSetup.SatipSvr = Param;
+        i++;
+        }
      else if ((Argument == "-i") or (Argument == "--inversion")) {
         PARAM("0,1,2");
         if      (Param == "0") WirbelscanSetup.DVBC_Inversion = 0;
@@ -369,6 +372,17 @@ bool ParseArguments(int argc, char* argv[]) {
         ErrorMessage("cannot understand '" + Argument + "'");
         return false;
         }
+     }
+
+  if (use_satip) {
+     std::string options;
+
+     // add further satip plugin options as needed.
+     if (not WirbelscanSetup.SatipSvr.empty())
+        options += "-s" + WirbelscanSetup.SatipSvr;
+
+     libs.push_back(new Library(LibSatip, options));
+     satip = libs[1]->Plugin();
      }
 
   switch(WirbelscanSetup.DVB_Type) {
@@ -479,6 +493,14 @@ bool ExtHelpText(std::string ProgName) {
   ss << "       -a N, --adapter N" << std::endl;
   ss << "               use device /dev/dvb/adapterN/ [default: auto detect]" << std::endl;
   ss << "               (also allowed: -a /dev/dvb/adapterN/frontendM)" << std::endl;
+  ss << "       --satip-server <STRING>" << std::endl;
+  ss << "               do not auto detect satip server," << std::endl;
+  ss << "               but use manual server settings, ie." << std::endl;
+  ss << "                 192.168.2.66|DVBC-1" << std::endl;
+  ss << "                 192.168.2.66|DVBS2-2,DVBT2-2|OctopusNet" << std::endl;
+  ss << "                 192.168.2.66|DVBS2-4|OctopusNet;192.168.0.2|DVBT2-4|minisatip:0x18" << std::endl;
+  ss << "                 192.168.2.66:554|DVBS2-2:S19.2E|OctopusNet;192.168.2.2:8554|DVBS2-4:S19.2E,S1W|minisatip" << std::endl;
+  ss << "               for detailled description, refer to vdr-plugin-satip's README." << std::endl;
   ss << ".................DVB-C..................." << std::endl;
   ss << "       -i N, --inversion N" << std::endl;
   ss << "               spectral inversion setting for cable TV" << std::endl;

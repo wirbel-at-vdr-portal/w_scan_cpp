@@ -39,6 +39,7 @@ public:
   bool HelpText;
   std::string OutputFile;
   std::vector<std::string> SortCriteria;
+  std::string SatipSvr;
   std::string SatipAddr;
   std::string SatipModel;
   std::string SatipDesc;
