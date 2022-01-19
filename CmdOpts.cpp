@@ -59,7 +59,7 @@ void WirbelscanDefaults(void) {
   WirbelscanSetup.ATSC_type = 0;
   WirbelscanSetup.CountryIndex = GetCountryId("DE");
   WirbelscanSetup.DVB_Type = 0;
-  WirbelscanSetup.DVBC_Inversion = 1;
+  WirbelscanSetup.DVBC_Inversion = 0;
   WirbelscanSetup.DVBC_Network_PID = 0x10;
   WirbelscanSetup.DVBC_QAM = 0;
   WirbelscanSetup.DVBC_Symbolrate = 0;
