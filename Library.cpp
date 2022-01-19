@@ -73,10 +73,10 @@ Library::Library(std::string FileName, std::string Arguments)
         }
   #endif
 
-
+  argv.reserve(16);
   args = SplitStr(Arguments, ';');
   args.insert(args.begin(), FileName);
-  for(auto s:args)
+  for(auto& s:args)
      argv.push_back((char*) s.c_str());
 
   plugin = create();
