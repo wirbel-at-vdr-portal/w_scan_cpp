@@ -75,14 +75,13 @@ int main(int argc, char* argv[]) {
      for(auto line:SplitStr(Reply, '\n')) {
         if (not ParseSatipServer(line))
            continue;
-        break;
+        Message("using " + WirbelscanSetup.SatipDesc + "@" + WirbelscanSetup.SatipAddr);
         }
 
      if (WirbelscanSetup.SatipAddr.empty()) {
         Message("no satip server found.");
         return -1;
         }
-     Message("using " + WirbelscanSetup.SatipDesc + "@" + WirbelscanSetup.SatipAddr);
      }
 
   for(int i = 0; i < cDevice::NumDevices(); i++) {
