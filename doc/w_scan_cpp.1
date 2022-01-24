@@ -275,6 +275,21 @@ N=1 search also encrypted channels [default]
 use device /dev/dvb/adapterN/ [default: auto detect]
 .br
 (also allowed: -a /dev/dvb/adapterN/frontendM)
+.TP
+.B --satip-server <STRING>
+do not auto detect the satip server, but use manual
+.br
+server settings, ie.
+.br
+192.168.2.66 (the servers IP)
+.br
+192.168.2.66|DVBC-1 (the servers has one DVB-C frontend)
+.br
+192.168.2.66|DVBS2-2,DVBT2-2|OctopusNet (two different fe and quirks for OctopusNet)
+.br
+NOTE: as this option is just forwarded to the vdr-plugin-satip,
+.br
+please refer to it's README for further details.
 .SH "*** DVB-C ***"
 .TP
 .B -i N, --inversion N
