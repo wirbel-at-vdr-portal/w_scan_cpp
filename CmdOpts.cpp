@@ -375,7 +375,7 @@ bool ParseArguments(int argc, char* argv[]) {
      }
 
   if (use_satip) {
-     std::string options;
+     std::string options("-t 16384 ");
 
      // add further satip plugin options as needed.
      if (not WirbelscanSetup.SatipSvr.empty())
