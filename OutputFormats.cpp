@@ -1352,7 +1352,7 @@ void PrintXML(std::vector<TChannel>& List) {
   ss << "     if reading or writing w_scan XML file format:" << std::endl;
   ss << "        - please validate XML against DTD above." << std::endl;
   ss << "        - indent each XML element" << std::endl;
-  ss << "        - indent using three spaces, dont use <TAB> char to indent." << std::endl;
+  ss << "        - indent using three spaces, don't use <TAB> char to indent." << std::endl;
   ss << "        - conform to requirements mentionend in DTD file." << std::endl;
   ss << " -->" << std::endl << std::endl;
   ss << INDENT << "<service_list>" << std::endl;
