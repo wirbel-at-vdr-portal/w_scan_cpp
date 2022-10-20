@@ -51,8 +51,8 @@ CC  = @gcc
 CXX = @g++
 
 
-CFLAGS    = -g -O3 -fPIC -Werror=overloaded-virtual
-CXXFLAGS  = -g -O3 -fPIC -Wall -Wextra -Werror=overloaded-virtual -Wno-unused-parameter -Wfatal-errors
+CFLAGS   += -g -O3 -fPIC -Werror=overloaded-virtual
+CXXFLAGS += -g -O3 -fPIC -Wall -Wextra -Werror=overloaded-virtual -Wno-unused-parameter -Wfatal-errors
 
 
 
@@ -198,7 +198,7 @@ APIVERSION   = $(shell sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$$/\1/p' $(vdr
 DEFINES   = -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -DPLUGIN_NAME_I18N='"cmd"'
 DEFINES  += -DAPIVERSION='"$(APIVERSION)"'
 DEFINES  += -DSTATIC_PLUGINS
-LIBS      = -ljpeg -lpthread -lcap -ldl -lrt $(shell $(PKG_CONFIG) --libs freetype2 fontconfig)
+LIBS      = -ljpeg -pthread -lcap -ldl -lrt $(shell $(PKG_CONFIG) --libs freetype2 fontconfig)
 LIBS     += $(shell curl-config --libs)
 LIBS     += $(shell pkg-config --libs-only-l $(LIBPUGIXML))
 LIBS     += $(shell pkg-config --libs-only-l $(LIBREPFUNC))
@@ -209,7 +209,7 @@ INCLUDES += $(shell pkg-config --cflags-only-I $(LIBJPEG))
 INCLUDES += $(shell pkg-config --cflags-only-I $(LIBPUGIXML))
 INCLUDES += $(shell pkg-config --cflags-only-I $(LIBREPFUNC))
 INCLUDES += $(shell $(PKG_CONFIG) --cflags freetype2 fontconfig)
-LDFLAGS  ?= -L$(srcdir) -L$(vdrdir) -L$(vdrlibsidir)
+LDFLAGS  += -L$(srcdir) -L$(vdrdir) -L$(vdrlibsidir)
 LDFLAGS  += $(shell pkg-config --libs-only-L $(LIBJPEG))
 LDFLAGS  += $(shell pkg-config --libs-only-L $(LIBPUGIXML))
 LDFLAGS  += $(shell pkg-config --libs-only-L $(LIBREPFUNC))
@@ -265,19 +265,19 @@ GN=\e[1;32m
 ifeq ($(CXX),@g++)
 	@echo -e "${CY} CXX $@${RST}"
 endif
-	$(CXX) $(CFLAGS) -Wno-parentheses -Wno-unused-parameter -c $(DEFINES) $(INCLUDES) -o $@ $<
+	$(CXX) $(CFLAGS) $(CPPFLAGS) -Wno-parentheses -Wno-unused-parameter -c $(DEFINES) $(INCLUDES) -o $@ $<
 
 %.o: %.cpp
 ifeq ($(CXX),@g++)
 	@echo -e "${BL} CXX $@${RST}"
 endif
-	$(CXX) $(CXXFLAGS) -c $(DEFINES) -DDISABLE_TEMPLATES_COLLIDING_WITH_STL $(INCLUDES) -o $@ $<
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(DEFINES) -DDISABLE_TEMPLATES_COLLIDING_WITH_STL $(INCLUDES) -o $@ $<
 
 all: check_dependencies $(LIBSI_OBJS) $(VDR_OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(OBJS)
 ifeq ($(CXX),@g++)
 	@echo -e "${GN} LINK $(BINARY)${RST}"
 endif
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBSI_OBJS) $(VDR_OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(OBJS) $(LIBS) -o $(BINARY)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $(LIBSI_OBJS) $(VDR_OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(OBJS) $(LIBS) -o $(BINARY)
 
 install: all
 	$(MKDIR_P) $(DESTDIR)$(bindir)
