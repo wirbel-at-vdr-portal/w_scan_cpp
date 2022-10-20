@@ -469,9 +469,6 @@ bool ExtHelpText(std::string ProgName) {
   std::stringstream ss;
   ss << "*** expert help ***" << std::endl;
   ss << ".................General................." << std::endl;
-  ss << "       -C <charset>, --charset <charset>" << std::endl;
-  ss << "               convert to charset, i.e. 'UTF-8', 'ISO-8859-15'" << std::endl;
-  ss << "               use 'iconv --list' for full list of charsets." << std::endl;
   ss << "       -v, --verbose" << std::endl;
   ss << "               be more verbose (repeat for more)" << std::endl;
   ss << "       -q, --quiet" << std::endl;
