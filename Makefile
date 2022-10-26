@@ -216,11 +216,11 @@ LDFLAGS  += $(shell pkg-config --libs-only-L $(LIBREPFUNC))
 
 
 
-SOURCES           := $(wildcard $(srcdir)/*.cpp)
-VDR_SOURCES       := $(shell find $(vdrdir)  -maxdepth 1 ! -name "vdr.c" -name "*.c" 2>/dev/null)
-LIBSI_SOURCES     := $(wildcard $(vdrlibsidir)/*.c)
-WIRBELSCAN_SOURCES = $(wildcard $(pluginsrcdir)/wirbelscan/*.cpp)
-SATIP_SOURCES      = $(wildcard $(pluginsrcdir)/satip/*.c)
+SOURCES           := $(sort $(wildcard $(srcdir)/*.cpp))
+VDR_SOURCES       := $(shell find $(vdrdir)  -maxdepth 1 ! -name "vdr.c" -name "*.c" 2>/dev/null | LC_ALL=C sort)
+LIBSI_SOURCES     := $(sort $(wildcard $(vdrlibsidir)/*.c))
+WIRBELSCAN_SOURCES = $(sort $(wildcard $(pluginsrcdir)/wirbelscan/*.cpp))
+SATIP_SOURCES      = $(sort $(wildcard $(pluginsrcdir)/satip/*.c))
 
 
 
