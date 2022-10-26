@@ -497,7 +497,7 @@ bool ExtHelpText(std::string ProgName) {
   ss << "                 192.168.2.66|DVBS2-2,DVBT2-2|OctopusNet" << std::endl;
   ss << "                 192.168.2.66|DVBS2-4|OctopusNet;192.168.0.2|DVBT2-4|minisatip:0x18" << std::endl;
   ss << "                 192.168.2.66:554|DVBS2-2:S19.2E|OctopusNet;192.168.2.2:8554|DVBS2-4:S19.2E,S1W|minisatip" << std::endl;
-  ss << "               for detailled description, refer to vdr-plugin-satip's README." << std::endl;
+  ss << "               for detailed description, refer to vdr-plugin-satip's README." << std::endl;
   ss << ".................DVB-C..................." << std::endl;
   ss << "       -i N, --inversion N" << std::endl;
   ss << "               spectral inversion setting for cable TV" << std::endl;
