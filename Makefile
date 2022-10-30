@@ -284,7 +284,7 @@ install: all
 	$(MKDIR_P) $(DESTDIR)$(docdir)
 	$(MKDIR_P) $(DESTDIR)$(man1dir)
 	$(INSTALL_PROGRAM) $(BINARY) $(DESTDIR)$(bindir)
-	$(INSTALL_DATA) COPYING HISTORY README $(DESTDIR)$(docdir)
+	$(INSTALL_DATA) CONTRIBUTORS COPYING HISTORY README $(DESTDIR)$(docdir)
 	$(INSTALL_DATA) doc/w_scan_cpp.1 $(DESTDIR)$(man1dir)
 
 uninstall:

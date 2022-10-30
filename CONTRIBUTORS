@@ -1,0 +1,27 @@
+These persons contributed to this open-source tool. As bug reports, patches or
+pull requests. Thanks to them for..
+
+
+/* *** NOTE NOTE NOTE ***
+ *
+ * This list was created, after this tool was already a while in use.
+ * If you're one of the contributors and still missing your name here,
+ * pls ping me - you know how to contact me.
+ *
+ * Otherwise, this list will fill up slowly from reports in the past.
+ *
+ * Thanks to all of you, Winfried
+ */
+
+
+
+/* This list should be sorted alphabetically. */
+
+Fab Stz <fabstz-it@yahoo.fr>
+ - for reporting typos in vdr-plugin wirbelscan and w_scan_cpp
+ - for helping to improve debian linux compatibility
+ - for reporting that the VDR export is missing masking of VDR channels.conf
+   delimiters.
+ - for introducing reproducable builds into this tool and the patch for it
+ - for reporting, that the command line switch -C <charset>, --charset <charset>
+   was superceeded by use of environment settings: LANG, LC_*
