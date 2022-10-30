@@ -129,6 +129,26 @@ std::string VdrChannel(TChannel c) {
   std::stringstream ss;
   if (c.Name.empty()) c.Name = "???";
 
+  /* The line "<NAME>,<SHORTNAME>;<PROVIDER>:<FREQUENCY>:(..)" is scanned from
+   * left until the (leftmost) <FREQUENCY> ':' delimiter.
+   * No ':' delimiters allowed here:
+   */
+  ReplaceAll(c.Name     , ":", "|");
+  ReplaceAll(c.Shortname, ":", "|");
+  ReplaceAll(c.Provider , ":", "|");
+
+  /* The field  "<NAME>,<SHORTNAME>;<PROVIDER>" is scanned from left until
+   * the (leftmost) <PROVIDER> ';' delimiter.  No ';' delimiters allowed here:
+   */
+  ReplaceAll(c.Name     , ";", "|");
+  ReplaceAll(c.Shortname, ";", "|");
+
+  /* The field  "<NAME>,<SHORTNAME>" is scanned from right until
+   * the (rightmost) <SHORTNAME> ',' delimiter.
+   * No ',' delimiter allowed here:
+   */
+  ReplaceAll(c.Shortname, ",", ".");
+
   ss << c.Name;
   if (c.Shortname.size())   ss << "," << c.Shortname;
   if (c.Provider.size())    ss << ";" << c.Provider;
