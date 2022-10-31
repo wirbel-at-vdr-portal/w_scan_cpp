@@ -271,7 +271,7 @@ endif
 ifeq ($(CXX),@g++)
 	@echo -e "${BL} CXX $@${RST}"
 endif
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(DEFINES) -DDISABLE_TEMPLATES_COLLIDING_WITH_STL $(INCLUDES) -o $@ $<
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(DEFINES) $(INCLUDES) -o $@ $<
 
 all: check_dependencies $(LIBSI_OBJS) $(VDR_OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(OBJS)
 ifeq ($(CXX),@g++)
