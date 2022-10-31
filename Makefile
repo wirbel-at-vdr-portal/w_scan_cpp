@@ -315,7 +315,7 @@ $(pluginsrcdir)/wirbelscan:
 
 .PHONY: clean mrproper Version.h
 clean:
-	@$(RM) -f $(LIBSI_OBJS) $(VDR_OBJS) $(OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(BINARY)
+	@$(RM) -f $(LIBSI_OBJS) $(VDR_OBJS) $(OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(BINARY) .dependencies
 	@$(RM) -rf $(vdrdir)/.git
 	@$(RM) -rf $(pluginsrcdir)/vdr-plugin-satip/.git
 	@$(RM) -rf MakeHeader.bin
