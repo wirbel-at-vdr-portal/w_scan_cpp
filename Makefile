@@ -26,7 +26,7 @@ package_name ?= $(BINARY)
 
 
 #/******************************************************************************
-# * dependencies, add variables here, and checks in target check_dependencies
+# * dependencies, add variables here, and checks in target .dependencies
 # *****************************************************************************/
 LIBJPEG=libjpeg
 FREETYPE2=freetype2
@@ -273,7 +273,7 @@ ifeq ($(CXX),@g++)
 endif
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(DEFINES) $(INCLUDES) -o $@ $<
 
-$(BINARY): check_dependencies $(LIBSI_OBJS) $(VDR_OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(OBJS)
+$(BINARY): .dependencies $(LIBSI_OBJS) $(VDR_OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(OBJS)
 ifeq ($(CXX),@g++)
 	@echo -e "${GN} LINK $(BINARY)${RST}"
 endif
@@ -292,7 +292,7 @@ uninstall:
 	$(RM) -rf $(DESTDIR)$(docdir)
 	$(RM) -f $(DESTDIR)$(man1dir)/w_scan_cpp.1
 
-.PHONY: download check_dependencies
+.PHONY: download
 download: $(vdrdir) $(pluginsrcdir)/satip $(pluginsrcdir)/wirbelscan
 
 $(vdrdir):
@@ -358,7 +358,7 @@ binary: $(BINARY)
 #/******************************************************************************
 # * dependencies, check them here and provide message to user.
 # *****************************************************************************/
-check_dependencies:
+.dependencies:
 ifeq ($(HAVE_LIBJPEG),0)
 	@echo "ERROR: dependency not found: $(LIBJPEG)"
 	exit 1
