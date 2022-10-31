@@ -25,3 +25,5 @@ Fab Stz <fabstz-it@yahoo.fr>
  - for introducing reproducable builds into this tool and the patch for it
  - for reporting, that the command line switch -C <charset>, --charset <charset>
    was superceeded by use of environment settings: LANG, LC_*
+ - for pointing out, that the linker is called every time in Makefile,
+   even if the binary was already created.

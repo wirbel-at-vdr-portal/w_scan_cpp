@@ -273,13 +273,13 @@ ifeq ($(CXX),@g++)
 endif
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(DEFINES) $(INCLUDES) -o $@ $<
 
-all: check_dependencies $(LIBSI_OBJS) $(VDR_OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(OBJS)
+$(BINARY): check_dependencies $(LIBSI_OBJS) $(VDR_OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(OBJS)
 ifeq ($(CXX),@g++)
 	@echo -e "${GN} LINK $(BINARY)${RST}"
 endif
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $(LIBSI_OBJS) $(VDR_OBJS) $(WIRBELSCAN_OBJS) $(SATIP_OBJS) $(OBJS) $(LIBS) -o $(BINARY)
 
-install: all
+install: $(BINARY)
 	$(MKDIR_P) $(DESTDIR)$(bindir)
 	$(MKDIR_P) $(DESTDIR)$(docdir)
 	$(MKDIR_P) $(DESTDIR)$(man1dir)
