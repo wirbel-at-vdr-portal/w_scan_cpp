@@ -358,6 +358,8 @@ binary: $(BINARY)
 #/******************************************************************************
 # * dependencies, check them here and provide message to user.
 # *****************************************************************************/
+MAKEDEP = $(CXX) -MM -MG
+
 .dependencies: Makefile
 ifeq ($(HAVE_LIBJPEG),0)
 	@echo "ERROR: dependency not found: $(LIBJPEG)"
@@ -383,9 +385,9 @@ ifeq ($(HAVE_LIBREPFUNC_MINVERSION),0)
 	@echo "ERROR: dependency $(LIBREPFUNC) older than $(LIBREPFUNC_MINVERSION)"
 	exit 1
 endif
+	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(SOURCES) > $@
 
-
-
+-include .dependencies
 
 #/******************************************************************************
 # * debug
@@ -462,3 +464,4 @@ printvars:
 	@echo "VERSION            = $(VERSION)"
 	@echo "PACKAGE            = $(PACKAGE)"
 	@echo "MACHINE            = $(MACHINE)"
+	@echo "MAKEDEP            = $(MAKEDEP)"
