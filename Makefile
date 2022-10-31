@@ -358,7 +358,7 @@ binary: $(BINARY)
 #/******************************************************************************
 # * dependencies, check them here and provide message to user.
 # *****************************************************************************/
-.dependencies:
+.dependencies: Makefile
 ifeq ($(HAVE_LIBJPEG),0)
 	@echo "ERROR: dependency not found: $(LIBJPEG)"
 	exit 1
