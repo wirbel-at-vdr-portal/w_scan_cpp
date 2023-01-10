@@ -36,12 +36,12 @@ LIBREPFUNC=librepfunc
 LIBREPFUNC_MINVERSION=1.1.0
 
 # /* require either PKG_CONFIG_PATH to be set, or, a working pkg-config */
-HAVE_LIBJPEG              =$(shell if pkg-config --exists                                   $(LIBJPEG);    then echo "1"; else echo "0"; fi )
-HAVE_FREETYPE2            =$(shell if pkg-config --exists                                   $(FREETYPE2);  then echo "1"; else echo "0"; fi )
-HAVE_FONTCONFIG           =$(shell if pkg-config --exists                                   $(FONTCONFIG); then echo "1"; else echo "0"; fi )
-HAVE_LIBPUGIXML           =$(shell if pkg-config --exists                                   $(LIBPUGIXML); then echo "1"; else echo "0"; fi )
-HAVE_LIBREPFUNC           =$(shell if pkg-config --exists                                   $(LIBREPFUNC); then echo "1"; else echo "0"; fi )
-HAVE_LIBREPFUNC_MINVERSION=$(shell if pkg-config --atleast-version=$(LIBREPFUNC_MINVERSION) $(LIBREPFUNC); then echo "1"; else echo "0"; fi )
+HAVE_LIBJPEG              =$(shell if $(PKG_CONFIG) --exists                                   $(LIBJPEG);    then echo "1"; else echo "0"; fi )
+HAVE_FREETYPE2            =$(shell if $(PKG_CONFIG) --exists                                   $(FREETYPE2);  then echo "1"; else echo "0"; fi )
+HAVE_FONTCONFIG           =$(shell if $(PKG_CONFIG) --exists                                   $(FONTCONFIG); then echo "1"; else echo "0"; fi )
+HAVE_LIBPUGIXML           =$(shell if $(PKG_CONFIG) --exists                                   $(LIBPUGIXML); then echo "1"; else echo "0"; fi )
+HAVE_LIBREPFUNC           =$(shell if $(PKG_CONFIG) --exists                                   $(LIBREPFUNC); then echo "1"; else echo "0"; fi )
+HAVE_LIBREPFUNC_MINVERSION=$(shell if $(PKG_CONFIG) --atleast-version=$(LIBREPFUNC_MINVERSION) $(LIBREPFUNC); then echo "1"; else echo "0"; fi )
 
 
 #/******************************************************************************
@@ -200,19 +200,19 @@ DEFINES  += -DAPIVERSION='"$(APIVERSION)"'
 DEFINES  += -DSTATIC_PLUGINS
 LIBS      = -ljpeg -pthread -lcap -ldl -lrt $(shell $(PKG_CONFIG) --libs freetype2 fontconfig)
 LIBS     += $(shell curl-config --libs)
-LIBS     += $(shell pkg-config --libs-only-l $(LIBPUGIXML))
-LIBS     += $(shell pkg-config --libs-only-l $(LIBREPFUNC))
+LIBS     += $(shell $(PKG_CONFIG) --libs-only-l $(LIBPUGIXML))
+LIBS     += $(shell $(PKG_CONFIG) --libs-only-l $(LIBREPFUNC))
 INCLUDES  = -I$(srcdir)
 INCLUDES += -I$(vdrdir)
 INCLUDES += -I$(pluginsrcdir)
-INCLUDES += $(shell pkg-config --cflags-only-I $(LIBJPEG))
-INCLUDES += $(shell pkg-config --cflags-only-I $(LIBPUGIXML))
-INCLUDES += $(shell pkg-config --cflags-only-I $(LIBREPFUNC))
+INCLUDES += $(shell $(PKG_CONFIG) --cflags-only-I $(LIBJPEG))
+INCLUDES += $(shell $(PKG_CONFIG) --cflags-only-I $(LIBPUGIXML))
+INCLUDES += $(shell $(PKG_CONFIG) --cflags-only-I $(LIBREPFUNC))
 INCLUDES += $(shell $(PKG_CONFIG) --cflags freetype2 fontconfig)
 LDFLAGS  += -L$(srcdir) -L$(vdrdir) -L$(vdrlibsidir)
-LDFLAGS  += $(shell pkg-config --libs-only-L $(LIBJPEG))
-LDFLAGS  += $(shell pkg-config --libs-only-L $(LIBPUGIXML))
-LDFLAGS  += $(shell pkg-config --libs-only-L $(LIBREPFUNC))
+LDFLAGS  += $(shell $(PKG_CONFIG) --libs-only-L $(LIBJPEG))
+LDFLAGS  += $(shell $(PKG_CONFIG) --libs-only-L $(LIBPUGIXML))
+LDFLAGS  += $(shell $(PKG_CONFIG) --libs-only-L $(LIBREPFUNC))
 
 
 
