@@ -27,3 +27,5 @@ Fab Stz <fabstz-it@yahoo.fr>
    was superceeded by use of environment settings: LANG, LC_*
  - for pointing out, that the linker is called every time in Makefile,
    even if the binary was already created.
+ - for Makefile report + patch that pkg-config should be $(PKG_CONFIG) in all
+   occurencies.
