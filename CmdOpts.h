@@ -44,6 +44,7 @@ public:
   std::string SatipModel;
   std::string SatipDesc;
   std::string FemonChannel;
+  bool ParseLCN;
 };
 extern wsetup WirbelscanSetup;
 extern std::string OutputFormat;

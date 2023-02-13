@@ -75,6 +75,7 @@ void WirbelscanDefaults(void) {
   WirbelscanSetup.scan_update_existing = 0;
   WirbelscanSetup.scan_append_new = 1;
   WirbelscanSetup.HelpText = false;
+  WirbelscanSetup.ParseLCN = false;
 }
 
 void WirbelscanUpdateSettings(void) {
@@ -93,6 +94,7 @@ void WirbelscanUpdateSettings(void) {
 //            "SingleTransponder" , "T:682000:0:B8I1M2S0|C:306:6900:I1M256|S19E2:10714:22000:HC23M5O35P0S1|P:0:0:|P:0:0:|A:306:0:M2"
 //SendInteger("tp_only"           , WirbelscanSetup.tp_only);
   SendInteger("verbosity"         , WirbelscanSetup.verbosity);
+  SendInteger("ParseLCN"          , WirbelscanSetup.ParseLCN?1:0);
   #undef SendInteger
 }
 
@@ -368,6 +370,8 @@ bool ParseArguments(int argc, char* argv[]) {
         Scr = Param;
         i++;
         }
+     else if (Argument == "--enable-lcn")
+        WirbelscanSetup.ParseLCN = true;
      else {
         ErrorMessage("cannot understand '" + Argument + "'");
         return false;
@@ -486,6 +490,14 @@ bool ExtHelpText(std::string ProgName) {
   ss << "       -E N, --encrypted-services (Conditional Access)" << std::endl;
   ss << "               N=0 gets only Free TV channels" << std::endl;
   ss << "               N=1 search also encrypted channels [default]" << std::endl;
+  ss << "       --enable-lcn" << std::endl;
+  ss << "               enable 'logical channel numbering'" << std::endl;
+  ss << "               Logical channel numbering (LCN) is used in very rare" << std::endl;
+  ss << "               countries and a non-standard feature of DTV." << std::endl;
+  ss << "               If you are using an terrestrial or cable based setup," << std::endl;
+  ss << "               and live in one of the countries which is using LCN," << std::endl;
+  ss << "               you may enable this feature here." << std::endl;
+  ss << "               LCN is off by default." << std::endl;
   ss << ".................Device.................." << std::endl;
   ss << "       -a N, --adapter N" << std::endl;
   ss << "               use device /dev/dvb/adapterN/ [default: auto detect]" << std::endl;
