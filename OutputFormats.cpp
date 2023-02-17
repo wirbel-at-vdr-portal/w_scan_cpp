@@ -50,6 +50,13 @@ struct {
         else if ((A != ~0) and (B != ~0))
            return A < B;
         }
+     if ((a.LCN != -1) or (b.LCN != -1)) {
+        if (a.LCN == -1) return false; // b has valid LCN
+        if (b.LCN == -1) return true;  // a has valid LCN
+        // sort LCN ascending
+        return (a.LCN < b.LCN) or ((a.LCN == b.LCN) and
+               (a.LCN_minor < b.LCN_minor));
+        }
      return UpperCase(VdrChannel(a)) < UpperCase(VdrChannel(b));
      }   
 } CompareChannel;
@@ -65,8 +72,9 @@ struct {
 
 struct {
   bool operator()(TChannel a, TChannel b) const {
-     return UpperCase(VdrChannel(a)) == UpperCase(VdrChannel(b));
-     }   
+     return a.LCN == b.LCN and a.LCN_minor == b.LCN_minor and
+            UpperCase(VdrChannel(a)) == UpperCase(VdrChannel(b));
+     }
 } EqualChannel;
 
 std::vector<TChannel> UniqueTransponders(const std::vector<TChannel>& List) {
