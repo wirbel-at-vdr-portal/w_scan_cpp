@@ -762,21 +762,27 @@ void PrintVLC(std::vector<TChannel>& List) {
   indent++;
 
   const char* AppUrl = "http://www.videolan.org/vlc/playlist/0";
-  size_t TitleNumber = 0;
+  size_t TitleNumber = 1;
 
   for(auto c:UniqueChannels(List)) {
      ss << INDENT << "<track>" << std::endl;
      indent++;
 
-     std::string title(std::to_string(TitleNumber));
-     while(title.size() < 4) title = "0" + title;
+     if (c.LCN != -1)
+        TitleNumber = c.LCN;
+     ss << INDENT << "<trackNum>" << IntToStr(TitleNumber);
+     if (c.Source == "A" and c.LCN_minor != -1)
+        ss << "." << c.LCN_minor;
+     ss << "</trackNum>" << std::endl;
+
+     std::string title;
      if (not c.Name.empty()) {
         for(size_t p = c.Name.find('&'); p!=std::string::npos; p = c.Name.find('&', p+1))
            c.Name.insert(p+1, "amp;");
-        title += ". " + c.Name;
+        title = c.Name;
         }
      else
-        title += ". Channel";
+        title = "Channel";
      ss << INDENT << "<title>" << title << "</title>" << std::endl;
 
      uint32_t freq_Hz;
@@ -790,7 +796,11 @@ void PrintVLC(std::vector<TChannel>& List) {
         ss << INDENT << "<extension application=" << '"' << AppUrl << '"' << ">" << std::endl;
         indent++;
 
-        ss << INDENT << "<vlc:id>"     << TitleNumber  << "</vlc:id>" << std::endl;
+        ss << INDENT << "<vlc:id>" << TitleNumber;
+        if (c.LCN_minor != -1)
+           ss << "." << c.LCN_minor;
+        ss << "</vlc:id>" << std::endl;
+
         ss << INDENT << "<vlc:option>" << "dvb-ts-id=" << c.TID << "</vlc:option>" << std::endl;
         ss << INDENT << "<vlc:option>" << "program="   << c.SID << "</vlc:option>" << std::endl;
 
@@ -966,9 +976,9 @@ void PrintVLC(std::vector<TChannel>& List) {
         ss << INDENT << "</extension>" << std::endl;
         }
 
+     TitleNumber++;
      indent--;
      ss << INDENT << "</track>" << std::endl;
-     TitleNumber++;
      } // end for()
 
   indent--;
@@ -1007,18 +1017,25 @@ void PrintVLCsatip(std::vector<TChannel>& List) {
   ss << INDENT << "<trackList>" << std::endl;
   indent++;
 
+  const char* AppUrl = "http://www.videolan.org/vlc/playlist/0";
   size_t TitleNumber = 1;
 
   for(auto c:UniqueChannels(List)) {
      ss << INDENT << "<track>" << std::endl;
      indent++;
 
-     std::string title(std::to_string(TitleNumber));
+     if (c.LCN != -1)
+        TitleNumber = c.LCN;
+     ss << INDENT << "<trackNum>" << IntToStr(TitleNumber);
+     if (c.Source == "A" and c.LCN_minor != -1)
+        ss << "." << c.LCN_minor;
+     ss << "</trackNum>" << std::endl;
 
+     std::string title;
      if (not c.Name.empty()) {
         for(size_t p = c.Name.find('&'); p!=std::string::npos; p = c.Name.find('&', p+1))
            c.Name.insert(p+1, "amp;");
-        title += ". " + c.Name;
+        title = c.Name;
         }
      else
         title += ". Channel";
@@ -1152,6 +1169,17 @@ void PrintVLCsatip(std::vector<TChannel>& List) {
      if (c.DPIDs.Count() > 0) ss << ',' << c.DPIDs[0].PID;        
      if (c.TPID > 0)          ss << ',' << c.TPID;
      ss << "</location>" << std::endl;
+
+     ss << INDENT << "<extension application=" << '"' << AppUrl << '"' << ">" << std::endl;
+     indent++;
+
+     ss << INDENT << "<vlc:id>" << TitleNumber;
+     if (c.Source == "A" and c.LCN_minor != -1)
+        ss << "." << c.LCN_minor;
+     ss << "</vlc:id>" << std::endl;
+
+     indent--;
+     ss << INDENT << "</extension>" << std::endl;
 
      indent--;
      ss << INDENT << "</track>" << std::endl;
