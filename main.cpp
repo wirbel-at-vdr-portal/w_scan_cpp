@@ -151,6 +151,12 @@ int main(int argc, char* argv[]) {
      auto Stop = std::chrono::high_resolution_clock::now();
      auto Elapsed = std::chrono::duration_cast<std::chrono::seconds>(Stop - Start).count();
 
+     if (WirbelscanSetup.ParseLCN and WirbelscanSetup.verbosity > 4) {
+        extern std::string VdrChannel(TChannel c);
+        extern std::vector<TChannel> UniqueChannels(const std::vector<TChannel>& List);
+        for(auto c:UniqueChannels(data)) dlog(5, BackFill(IntToStr(c.LCN),6) + VdrChannel(c));
+        }
+
      Message(std::to_string(data.size()) + " services. scan time: " +
              IntToStr(Elapsed / 60, 2, false, '0') + ":" + IntToStr(Elapsed % 60, 2, false, '0'));
 
