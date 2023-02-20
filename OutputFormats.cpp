@@ -801,6 +801,16 @@ void PrintVLC(std::vector<TChannel>& List) {
            ss << "." << c.LCN_minor;
         ss << "</vlc:id>" << std::endl;
 
+        if (c.LCN != -1) {
+           ss << INDENT << "<vlc:option>"
+              << "logical-channel-number=" << c.LCN
+              << "</vlc:option>" << std::endl;
+           if (c.LCN_minor != -1)
+              ss << INDENT << "<vlc:option>"
+                 << "logical-channel-number-minor=" << c.LCN_minor
+                 << "</vlc:option>" << std::endl;
+           }
+
         ss << INDENT << "<vlc:option>" << "dvb-ts-id=" << c.TID << "</vlc:option>" << std::endl;
         ss << INDENT << "<vlc:option>" << "program="   << c.SID << "</vlc:option>" << std::endl;
 
@@ -822,6 +832,9 @@ void PrintVLC(std::vector<TChannel>& List) {
 
         ss << INDENT << "<extension" << " application=" << '"' << AppUrl << '"' << ">" << std::endl;
         indent++;
+
+        if (c.LCN != -1)
+           ss << INDENT << "<vlc:option>" << "logical-channel-number=" << c.LCN << "</vlc:option>" << std::endl;
 
         ss << INDENT << "<vlc:id>"     << TitleNumber  << "</vlc:id>" << std::endl;
         ss << INDENT << "<vlc:option>" << "dvb-ts-id=" << c.TID             << "</vlc:option>" << std::endl;
@@ -851,6 +864,9 @@ void PrintVLC(std::vector<TChannel>& List) {
 
         ss << INDENT << "<extension" << " application=" << '"' << AppUrl << '"' << ">" << std::endl;
         indent++;
+
+        if (c.LCN != -1)
+           ss << INDENT << "<vlc:option>" << "logical-channel-number=" << c.LCN << "</vlc:option>" << std::endl;
 
         int bw = c.Bandwidth;
         while(bw > 999) bw = round(bw/1000.0);
@@ -918,6 +934,9 @@ void PrintVLC(std::vector<TChannel>& List) {
 
         ss << INDENT << "<extension" << " application=" << '"' << AppUrl << '"' << ">" << std::endl;
         indent++;
+
+        if (c.LCN != -1)
+           ss << INDENT << "<vlc:option>" << "logical-channel-number=" << c.LCN << "</vlc:option>" << std::endl;
 
         ss << INDENT << "<vlc:id>"     << TitleNumber         << "</vlc:id>" << std::endl;
         ss << INDENT << "<vlc:option>" << "dvb-ts-id="        << c.TID << "</vlc:option>" << std::endl;
@@ -1177,6 +1196,12 @@ void PrintVLCsatip(std::vector<TChannel>& List) {
      if (c.Source == "A" and c.LCN_minor != -1)
         ss << "." << c.LCN_minor;
      ss << "</vlc:id>" << std::endl;
+
+     if (c.LCN != -1) {
+         ss << INDENT << "<vlc:option>" << "logical-channel-number=" << c.LCN << "</vlc:option>" << std::endl;
+         if (c.Source == "A" and c.LCN_minor != -1)
+            ss << INDENT << "<vlc:option>" << "logical-channel-number-minor=" << c.LCN_minor << "</vlc:option>" << std::endl;
+         }
 
      indent--;
      ss << INDENT << "</extension>" << std::endl;
