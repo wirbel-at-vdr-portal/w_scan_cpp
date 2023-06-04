@@ -153,3 +153,6 @@
      Fixing it.
 * bump version to 20211212
 
+202330604:
+-------------------------------------------------------------------------------
+* fix FTBC on wirbelscan plugin -> bump wirbelscan version
