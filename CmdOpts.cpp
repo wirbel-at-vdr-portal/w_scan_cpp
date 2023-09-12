@@ -126,6 +126,7 @@ bool ParseArguments(int argc, char* argv[]) {
   std::string Source("S19.2E");
   int RotorPosition = 9999;
   bool use_satip = false;
+  bool tcp_satip = false;
 
   size_t p = ProgName.find_last_of("/\\");
   if (p != std::string::npos)
@@ -168,6 +169,8 @@ bool ParseArguments(int argc, char* argv[]) {
         return ExtHelpText(ProgName);
      else if ((Argument == "-t") or (Argument == "--satip"))
         use_satip = true;
+     else if (Argument == "--satip-force-tcp")
+        tcp_satip = true;
      else if ((Argument == "-f") or (Argument == "--frontend")) {
         PARAM("a,c,s,t");
         if      (Param == "a") WirbelscanSetup.DVB_Type = 5;
@@ -379,14 +382,17 @@ bool ParseArguments(int argc, char* argv[]) {
      }
 
   if (use_satip) {
-     std::string options("-t 16384 ");
+     std::string options(WirbelscanSetup.verbosity > 5 ? "-t 16385;" : "-t 16384;");
 
      // add further satip plugin options as needed.
      if (not WirbelscanSetup.SatipSvr.empty())
-        options += "-s" + WirbelscanSetup.SatipSvr;
+        options += "-s " + WirbelscanSetup.SatipSvr;
 
      libs.push_back(new Library(LibSatip, options));
      satip = libs[1]->Plugin();
+     if (satip && tcp_satip) {
+       satip->SetupParse("TransportMode","2");
+       }
      }
 
   switch(WirbelscanSetup.DVB_Type) {
@@ -510,6 +516,8 @@ bool ExtHelpText(std::string ProgName) {
   ss << "                 192.168.2.66|DVBS2-4|OctopusNet;192.168.0.2|DVBT2-4|minisatip:0x18" << std::endl;
   ss << "                 192.168.2.66:554|DVBS2-2:S19.2E|OctopusNet;192.168.2.2:8554|DVBS2-4:S19.2E,S1W|minisatip" << std::endl;
   ss << "               for detailed description, refer to vdr-plugin-satip's README." << std::endl;
+  ss << "       --satip-force-tcp" << std::endl;
+  ss << "               force the use of TCP-over-RTSP for transport." << std::endl;
   ss << ".................DVB-C..................." << std::endl;
   ss << "       -i N, --inversion N" << std::endl;
   ss << "               spectral inversion setting for cable TV" << std::endl;
