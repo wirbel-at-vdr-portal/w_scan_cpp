@@ -1597,7 +1597,6 @@ void PrintXML(std::vector<TChannel>& List) {
   for(auto c:List) {
      if (c.Name.empty()) c.Name = "empty";
 
-     indent++;
      ss << INDENT << "<service"
         << " ONID=" << '"' << c.ONID << '"'
         << " TSID=" << '"' << c.TID  << '"'
