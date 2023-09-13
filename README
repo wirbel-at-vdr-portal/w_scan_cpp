@@ -200,6 +200,10 @@ and the complete help with DiSEqC switches or rotors, SCR, (..) with
 - now also using SAT>IP, instead of local DVB hardware
      w_scan_cpp -fs -sS19E2 -x --satip
 
+- and now also using one specific remote SAT>IP server in a differnt LAN
+     w_scan_cpp -fs -sS19E2 -x --satip --satip-force-tcp \
+                --satip-server '192.168.88.22:554|DVBS2-1|forced:0x08'
+
 - DVB-S/S2 with VLC player config
      w_scan_cpp -fs -sS19E2 -L
 
