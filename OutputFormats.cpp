@@ -1590,14 +1590,13 @@ void PrintXML(std::vector<TChannel>& List) {
      ss << INDENT << "</transponder>" << std::endl; indent--;
      } /* for loop */
 
-  ss << INDENT << "</transponders>"   << std::endl; indent--;
+  ss << INDENT << "</transponders>"   << std::endl;
 
 
-  ss << INDENT << "<services>"    << std::endl; indent++;
+  ss << INDENT << "<services>" << std::endl; indent++;
   for(auto c:List) {
      if (c.Name.empty()) c.Name = "empty";
 
-     indent++;
      ss << INDENT << "<service"
         << " ONID=" << '"' << c.ONID << '"'
         << " TSID=" << '"' << c.TID  << '"'
@@ -1682,13 +1681,13 @@ void PrintXML(std::vector<TChannel>& List) {
 
      indent--;  ss << INDENT << "</service>" << std::endl;
      }
+  indent--; ss << INDENT << "</services>" << std::endl;
 
-  ss << INDENT << "</services>"   << std::endl; indent--;
+  indent--; ss << INDENT << "</service_list>" << std::endl;
 
   ss << std::endl;
   OutputLine(ss.str());
 }
-
 
 std::string CaName(int id) {
 //int minor = id & 0xFF;

@@ -32,3 +32,7 @@ Fab Stz <fabstz-it@yahoo.fr>
 
 Manuel Reimer
  - for pointing to FTBC on wirbelscan plugin (missing <cstdint> in countries.h)
+
+Lars Theorin
+ - for reporting that the w-scan xml output (-Z) was broken and providing an
+   initial patch
