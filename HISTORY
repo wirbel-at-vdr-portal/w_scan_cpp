@@ -161,3 +161,9 @@
 -------------------------------------------------------------------------------
 * fix indent on w_scan XML output
 * fix satip-server commandline option
+* setting SAT>IP server quirk 0x08 now enables the use of RTP over TCP.
+  This allows to use SAT>IP servers, which are not in the same network, if the
+  server supports RTP over TCP. see option --satip-server and the README of
+  vdr-plugin-satip.
+  For example
+  w_scan_cpp -fs --satip --satip-server '192.168.88.22:554|DVBS2-1|MySvr:0x08'

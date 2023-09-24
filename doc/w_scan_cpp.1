@@ -282,9 +282,13 @@ server settings, ie.
 .br
 192.168.2.66|DVBS2-2,DVBT2-2|OctopusNet (two different fe types and quirks for OctopusNet)
 .br
+192.168.2.66|DVBS2-2|minisatip:0x08 (RTP over TCP)
+.br
 NOTE: as this option is just forwarded to the vdr-plugin-satip,
 .br
 please refer to it's README for further details.
+.br
+NOTE: Server quirk 0x08 enables RTP over TCP use.
 .SH "*** DVB-C ***"
 .TP
 .B -i N, --inversion N

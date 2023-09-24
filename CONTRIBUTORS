@@ -38,3 +38,4 @@ Lars Theorin
    initial patch
  - for reporting that the option --satip-server was broken and providing an
    initial patch
+ - for an initial patch to enable RTP over TCP on SAT>IP
