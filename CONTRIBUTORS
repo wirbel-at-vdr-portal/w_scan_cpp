@@ -36,3 +36,5 @@ Manuel Reimer
 Lars Theorin
  - for reporting that the w-scan xml output (-Z) was broken and providing an
    initial patch
+ - for reporting that the option --satip-server was broken and providing an
+   initial patch

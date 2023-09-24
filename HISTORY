@@ -153,6 +153,11 @@
      Fixing it.
 * bump version to 20211212
 
-202330604:
+20230604:
 -------------------------------------------------------------------------------
 * fix FTBC on wirbelscan plugin -> bump wirbelscan version
+
+2023xxxx:
+-------------------------------------------------------------------------------
+* fix indent on w_scan XML output
+* fix satip-server commandline option
