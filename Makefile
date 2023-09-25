@@ -14,6 +14,11 @@ WIRBELSCAN_VERSION = wirbelscan-2023.06.04
 SATIP_GIT_ADDR = https://github.com/wirbel-at-vdr-portal/vdr-plugin-satip.git
 
 
+#/******************************************************************************
+# * COMPACT_STATIC = 0 : the regular binary is generated with all shared libs
+# * COMPACT_STATIC = 1 : the binary doesn't link to unnecessary libraries
+# *****************************************************************************/
+COMPACT_STATIC = 1
 
 #/******************************************************************************
 # * if you are still running a distro, not beeing able to use all valid
@@ -198,7 +203,10 @@ APIVERSION   = $(shell sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$$/\1/p' $(vdr
 DEFINES   = -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -DPLUGIN_NAME_I18N='"cmd"'
 DEFINES  += -DAPIVERSION='"$(APIVERSION)"'
 DEFINES  += -DSTATIC_PLUGINS
-LIBS      = -ljpeg -pthread -lcap -ldl -lrt $(shell $(PKG_CONFIG) --libs freetype2 fontconfig)
+LIBS      = -pthread -lcap -ldl
+ifeq ($(COMPACT_STATIC),0)
+  LIBS   += -ljpeg $(shell $(PKG_CONFIG) --libs freetype2 fontconfig)
+endif
 LIBS     += $(shell curl-config --libs)
 LIBS     += $(shell $(PKG_CONFIG) --libs-only-l $(LIBPUGIXML))
 LIBS     += $(shell $(PKG_CONFIG) --libs-only-l $(LIBREPFUNC))
@@ -217,6 +225,9 @@ LDFLAGS  += $(shell $(PKG_CONFIG) --libs-only-L $(LIBREPFUNC))
 
 
 SOURCES           := $(sort $(wildcard $(srcdir)/*.cpp))
+ifeq ($(COMPACT_STATIC),1)
+  SOURCES         += $(sort $(wildcard $(srcdir)/micro/*.cpp))
+endif
 VDR_SOURCES       := $(shell find $(vdrdir)  -maxdepth 1 ! -name "vdr.c" -name "*.c" 2>/dev/null | LC_ALL=C sort)
 LIBSI_SOURCES     := $(sort $(wildcard $(vdrlibsidir)/*.c))
 WIRBELSCAN_SOURCES = $(sort $(wildcard $(pluginsrcdir)/wirbelscan/*.cpp))
