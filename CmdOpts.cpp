@@ -401,7 +401,13 @@ bool ParseArguments(int argc, char* argv[]) {
         Message("Using RTP over TCP.");
         satip->SetupParse("TransportMode", "2");
         }
+
+     if (WirbelscanSetup.DVB_Type == 2 /* S */ && not DiseqcSwitch.empty()) {
+        cSource *fs = new cSource('S',"");
+        fs->Parse((Source + " " + std::to_string(std::stol(DiseqcSwitch))).c_str())
+        Sources.Add(fs);
      }
+  }
 
   switch(WirbelscanSetup.DVB_Type) {
      case 5 /* A */: break;
