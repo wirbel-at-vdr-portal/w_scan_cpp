@@ -404,7 +404,7 @@ bool ParseArguments(int argc, char* argv[]) {
 
      if (WirbelscanSetup.DVB_Type == 2 /* S */ && not DiseqcSwitch.empty()) {
         cSource *fs = new cSource('S',"");
-        fs->Parse((Source + " " + std::to_string(std::stol(DiseqcSwitch))).c_str())
+        fs->Parse((Source + " " + std::to_string(std::stol(DiseqcSwitch))).c_str());
         Sources.Add(fs);
      }
   }
