@@ -1,0 +1,42 @@
+<?xml version=" << '"' << "1.0" << "?>
+<!DOCTYPE service_list SYSTEM "https://www.gen2vdr.de/wirbel/w_scan_cpp/service_list.dtd">
+
+<!-- NOTE:
+     if reading or writing w_scan XML file format:
+        - please validate XML against DTD above.
+        - indent each XML element
+        - indent using three spaces, don't use <TAB> char to indent.
+        - conform to requirements mentionend in DTD file.
+ -->
+
+<service_list>
+   <transponders>
+      <transponder ONID="8438" NID="13100" TSID="13057">
+         <params delsys="SYS_DVBT2" center_frequency="177500000">
+            <param modulation="QAM_AUTO"/>
+            <param bandwidth="8000000"/>
+            <param coderate="FEC_AUTO"/>
+            <param transmission="TRANSMISSION_MODE_32K"/>
+            <param guard="GUARD_INTERVAL_19_256"/>
+            <param hierarchy="HIERARCHY_NONE"/>
+            <param plp_id="0"/>
+         </params>
+      </transponder>
+   </transponders>
+   <services>
+      <service ONID="8438" TSID="13057" SID="102">
+         <name char256="Nelonen Pro 2 HD"/>
+         <provider char256="DNA"/>
+         <pcr pid="213"/>
+         <streams>
+            <stream type="27" pid="213" description="AVC Video stream, ITU-T Rec. H.264 | ISO/IEC 14496-10"/>
+            <stream type="124" pid="330" description="AAC Audio stream" language_code="fin"/>
+         </streams>
+         <CA_systems>
+            <CA_system name="Conax" ca_id="0x0B00"/>
+            <CA_system name="Conax" ca_id="0x0B02"/>
+         </CA_systems>
+         <comment char256="Nelonen Pro 2 HD is twice on 177.5MHz"/>
+      </service>
+   </services>
+</service_list>
