@@ -1425,9 +1425,9 @@ void PrintXML(std::vector<TChannel>& List) {
   std::stringstream ss;
   size_t indent = 0;
 
-  ss << "<?xml version=" << '"' << "1.0" << " ?>" << std::endl;
+  ss << "<?xml version=" << '"' << "1.0" << "?>" << std::endl;
   ss << "<!DOCTYPE service_list SYSTEM " << '"'
-     << "https://gen2vdr.de/wirbel/w_scan/dtd/service_list.dtd"
+     << "https://www.gen2vdr.de/wirbel/w_scan_cpp/service_list.dtd"
      << '"' << ">" << std::endl << std::endl;
   ss << "<!-- NOTE:" << std::endl;
   ss << "     if reading or writing w_scan XML file format:" << std::endl;
