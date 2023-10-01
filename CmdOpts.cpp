@@ -124,6 +124,7 @@ bool ParseArguments(int argc, char* argv[]) {
   std::string RotorUsals;
   std::string Scr;
   std::string Source("S19.2E");
+  std::string SatipSrc("1");
   int RotorPosition = 9999;
   bool use_satip = false;
 
@@ -274,6 +275,10 @@ bool ParseArguments(int argc, char* argv[]) {
         WirbelscanSetup.SatipSvr = Param;
         i++;
         }
+     else if (Argument == "--satip-src") {
+        PARAM(IntRange(1,255));
+        SatipSrc = Param;
+        }
      else if ((Argument == "-i") or (Argument == "--inversion")) {
         PARAM("0,1,2");
         if      (Param == "0") WirbelscanSetup.DVBC_Inversion = 0;
@@ -408,6 +413,11 @@ bool ParseArguments(int argc, char* argv[]) {
      case 1 /* C */: break;
      case 2 /* S */:
         {
+        if (use_satip) {
+           cSource* s = new cSource;
+           s->Parse((Source + " " + SatipSrc).c_str());
+           Sources.Add(s);
+           }
         if (not DiseqcSwitch.empty())
            DiseqcSwitchConfig(Source, Setup.LnbFrequLo, Setup.LnbFrequHi, Setup.LnbSLOF, DiseqcSwitch);
         else if (not Scr.empty())
@@ -526,6 +536,11 @@ bool ExtHelpText(std::string ProgName) {
   ss << "               for detailed description, refer to vdr-plugin-satip's README." << std::endl;
   ss << "               NOTE: If the satip server quirk 0x08 is set," << std::endl;
   ss << "                     RTP over TCP is used instead of unicast." << std::endl;
+  ss << "       --satip-src N" << std::endl;
+  ss << "               selects the satellite orbital position for SAT>IP by index N (1 .. 255)." << std::endl;
+  ss << "               The number of supported positions depends on the SAT>IP server." << std::endl;
+  ss << "                       1   = first position [default]" << std::endl;
+  ss << "                       255 = last position" << std::endl;
   ss << ".................DVB-C..................." << std::endl;
   ss << "       -i N, --inversion N" << std::endl;
   ss << "               spectral inversion setting for cable TV" << std::endl;

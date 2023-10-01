@@ -289,6 +289,15 @@ NOTE: as this option is just forwarded to the vdr-plugin-satip,
 please refer to it's README for further details.
 .br
 NOTE: Server quirk 0x08 enables RTP over TCP use.
+.TP
+.B --satip-src N
+selects the satellite orbital position for SAT>IP by index N (1 .. 255).
+.br
+The number of supported positions depends on the SAT>IP server.
+.br
+For the actual value of N, refer to the setup page of your SAT>IP server.
+.br
+The default value is 1.
 .SH "*** DVB-C ***"
 .TP
 .B -i N, --inversion N
