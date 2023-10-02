@@ -309,11 +309,18 @@
                                  QAM_64   |
                                  QAM_128  |
                                  QAM_256  |
+                                 QAM_1024 |
+                                 QAM_4096 |
                                  VSB_8    |
                                  VSB_16   |
                                  PSK_8    |
                                  APSK_16  |
                                  APSK_32  |
+                                 APSK_64  |
+                                 APSK_8_L |
+                                 APSK_16_L|
+                                 APSK_32_L|
+                                 APSK_64_L|
                                  DQPSK    |
                                  QAM_4_NR
                                  ) "QAM_AUTO"
