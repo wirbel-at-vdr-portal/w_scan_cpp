@@ -5,7 +5,7 @@
 
  This file describes the "w_scan XML file format" used by w_scan and
  it's successor w_scan_cpp.
- 
+
  This DTD file and the w_scan XML file format described by this DTD may be used
  and or redistributed in any kind of application as long as:
 
@@ -255,11 +255,11 @@
 
      Any param reflects transponder related NIT data (see en300486),
      ie. modulation, coderate, polarization, etc.
-     
+
      symbolrate, unit: MSymbol/sec ('MHz')
      bandwidth,  unit: MHz, format specifier is floating point with
                             3 digits after decimal point: "%.3f",
-                            see printf reference. 
+                            see printf reference.
 
      orbital_position: tens of deg in hex; ie 19.2deg -> 0x0192
      west_east_flag  : W = 'west', E = 'east'
