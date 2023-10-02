@@ -393,6 +393,7 @@
                                  GUARD_INTERVAL_1_8    |
                                  GUARD_INTERVAL_1_16   |
                                  GUARD_INTERVAL_1_32   |
+                                 GUARD_INTERVAL_1_64   |
                                  GUARD_INTERVAL_1_128  |
                                  GUARD_INTERVAL_19_128 |
                                  GUARD_INTERVAL_19_256 |
