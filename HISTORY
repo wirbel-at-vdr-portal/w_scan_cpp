@@ -157,7 +157,7 @@
 -------------------------------------------------------------------------------
 * fix FTBC on wirbelscan plugin -> bump wirbelscan version
 
-2023xxxx:
+20231015:
 -------------------------------------------------------------------------------
 * fix indent on w_scan XML output
 * fix satip-server commandline option
@@ -167,3 +167,14 @@
   vdr-plugin-satip.
   For example
   w_scan_cpp -fs --satip --satip-server '192.168.88.22:554|DVBS2-1|MySvr:0x08'
+* add commandline option --satip-src
+* add service_list.dtd to documentation
+* fix on satip plugin
+   * circumvent FritzBox DVB-C RTCP firmware bug
+   * add missing brackets to allow src selection 
+* bump wirbelscan plugin to 2023.10.15
+   * use std::atomic<bool> for scanfilters instead of bool
+   * move {active,isActive} to end of scanfilters Action()
+   * early delete and set to nullptr any of the scanfilters
+     in statemachine.cpp (less memory required)
+   * detach aReceiver from dev, before deleting it
