@@ -6,7 +6,7 @@
 # *****************************************************************************/
 BINARY = w_scan_cpp
 
-WIRBELSCAN_VERSION = wirbelscan-2023.06.04
+WIRBELSCAN_VERSION = wirbelscan-2023.10.15
 
 # original git repo seems to be stale.
 #SATIP_GIT_ADDR = https://github.com/rofafor/vdr-plugin-satip
