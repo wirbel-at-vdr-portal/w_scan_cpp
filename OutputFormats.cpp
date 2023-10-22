@@ -785,10 +785,12 @@ void PrintVLC(std::vector<TChannel>& List) {
         title = "Channel";
      ss << INDENT << "<title>" << title << "</title>" << std::endl;
 
-     uint32_t freq_Hz;
+     uint64_t freq_Hz = c.Frequency;
+     auto freq_Min = [](std::string Source) -> uint64_t {
+        return (Source.find('S') == 0) ? 3000000000ULL : 50000000ULL;
+        };
 
-     freq_Hz = c.Frequency;
-     while(freq_Hz && (freq_Hz < 1000000)) freq_Hz *= 1000;
+     while(freq_Hz && (freq_Hz < freq_Min(c.Source))) freq_Hz *= 1000;
 
      if (c.Source == "A") {
         ss << INDENT << "<location>atsc://frequency=" << freq_Hz << "</location>" << std::endl;
@@ -927,10 +929,9 @@ void PrintVLC(std::vector<TChannel>& List) {
         ss << INDENT << "</extension>" << std::endl;
         }
      if (c.Source.find('S') == 0) {
-        uint32_t freq_MHz = c.Frequency;
         ss << INDENT << "<location>dvb-s";
         if (c.DelSys == 1) ss << "2";
-        ss << "://frequency=" << freq_MHz << "</location>" << std::endl;
+        ss << "://frequency=" << freq_Hz << "</location>" << std::endl;
 
         ss << INDENT << "<extension" << " application=" << '"' << AppUrl << '"' << ">" << std::endl;
         indent++;
