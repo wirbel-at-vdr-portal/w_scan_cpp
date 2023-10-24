@@ -178,3 +178,7 @@
    * early delete and set to nullptr any of the scanfilters
      in statemachine.cpp (less memory required)
    * detach aReceiver from dev, before deleting it
+
+2023xxxx:
+-------------------------------------------------------------------------------
+* fix VLC output for Sat, VLC changed from MHz to Hz
