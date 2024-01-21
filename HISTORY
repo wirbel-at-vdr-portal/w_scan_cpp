@@ -182,3 +182,7 @@
 2023xxxx:
 -------------------------------------------------------------------------------
 * fix VLC output for Sat, VLC changed from MHz to Hz
+* add fix for w_scan XML output from Christoph Heitkamp
+* PrintVLC(), PrintXML(), PrintVLCsatip() now use XmlString() in texts
+  to convert quotation mark, ampersand, apostrophe, less-than sign,
+  greater-than sign to the five default XML char entities.
