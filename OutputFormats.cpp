@@ -738,6 +738,15 @@ void PrintDat(std::vector<TChannel>& List, std::string BinaryFile) {
 /*******************************************************************************
  * VLC output
  ******************************************************************************/
+void XmlString(std::string& s) {
+  if (s.empty()) return;
+  // those are the five predefined XML char entities
+  ReplaceAll(s, "&", "&amp;");
+  ReplaceAll(s, "<", "&lt;");
+  ReplaceAll(s, ">", "&gt;");
+  ReplaceAll(s, "'", "&apos;");
+  ReplaceAll(s, "\"", "&quot;");
+}
 
 void PrintVLC(std::vector<TChannel>& List) {
   std::stringstream ss;
@@ -777,9 +786,8 @@ void PrintVLC(std::vector<TChannel>& List) {
 
      std::string title;
      if (not c.Name.empty()) {
-        for(size_t p = c.Name.find('&'); p!=std::string::npos; p = c.Name.find('&', p+1))
-           c.Name.insert(p+1, "amp;");
         title = c.Name;
+        XmlString(title);
         }
      else
         title = "Channel";
@@ -1053,9 +1061,8 @@ void PrintVLCsatip(std::vector<TChannel>& List) {
 
      std::string title;
      if (not c.Name.empty()) {
-        for(size_t p = c.Name.find('&'); p!=std::string::npos; p = c.Name.find('&', p+1))
-           c.Name.insert(p+1, "amp;");
         title = c.Name;
+        XmlString(title);
         }
      else
         title += ". Channel";
@@ -1426,7 +1433,7 @@ void PrintXML(std::vector<TChannel>& List) {
   std::stringstream ss;
   size_t indent = 0;
 
-  ss << "<?xml version=" << '"' << "1.0" << "?>" << std::endl;
+  ss << "<?xml version=" << '"' << "1.0" << '"' << "?>" << std::endl;
   ss << "<!DOCTYPE service_list SYSTEM " << '"'
      << "https://www.gen2vdr.de/wirbel/w_scan_cpp/service_list.dtd"
      << '"' << ">" << std::endl << std::endl;
@@ -1604,9 +1611,18 @@ void PrintXML(std::vector<TChannel>& List) {
         << " SID="  << '"' << c.SID  << '"'
         << ">" << std::endl;  indent++;
 
-     if (not c.Name.empty())     ss << INDENT << "<name char256="     << '"' << c.Name     << '"' << "/>" << std::endl;
-     if (not c.Provider.empty()) ss << INDENT << "<provider char256=" << '"' << c.Provider << '"' << "/>" << std::endl;
-     if (c.PCR != 0)             ss << INDENT << "<pcr pid="          << '"' << c.PCR                      << '"' << "/>" << std::endl;
+     if (not c.Name.empty()) {
+        std::string name = c.Name;
+        XmlString(name);
+        ss << INDENT << "<name char256=" << '"' << name << '"' << "/>" << std::endl;
+        }
+     if (not c.Provider.empty()) {
+        std::string provider = c.Provider;
+        XmlString(provider);
+        ss << INDENT << "<provider char256=" << '"' << provider << '"' << "/>" << std::endl;
+        }
+     if (c.PCR != 0)
+        ss << INDENT << "<pcr pid=" << '"' << c.PCR << '"' << "/>" << std::endl;
 
      ss << INDENT << "<streams>" << std::endl; indent++;
      if (c.VPID.PID != 0) {

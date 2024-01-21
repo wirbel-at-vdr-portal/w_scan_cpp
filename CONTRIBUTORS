@@ -17,6 +17,10 @@ pull requests. Thanks to them for..
 
 /* This list should be sorted alphabetically. */
 
+Christoph Heitkamp
+ - for a patch that adds a missing quote to the w-scan xml output (-Z) and
+   a report that XML char entity conversion for texts was broken.
+
 Fab Stz <fabstz-it@yahoo.fr>
  - for reporting typos in vdr-plugin wirbelscan and w_scan_cpp
  - for helping to improve debian linux compatibility
@@ -30,12 +34,12 @@ Fab Stz <fabstz-it@yahoo.fr>
  - for Makefile report + patch that pkg-config should be $(PKG_CONFIG) in all
    occurencies.
 
-Manuel Reimer
- - for pointing to FTBC on wirbelscan plugin (missing <cstdint> in countries.h)
-
 Lars Theorin
  - for reporting that the w-scan xml output (-Z) was broken and providing an
    initial patch
  - for reporting that the option --satip-server was broken and providing an
    initial patch
  - for an initial patch to enable RTP over TCP on SAT>IP
+
+Manuel Reimer
+ - for pointing to FTBC on wirbelscan plugin (missing <cstdint> in countries.h)
