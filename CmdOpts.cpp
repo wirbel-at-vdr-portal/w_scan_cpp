@@ -76,6 +76,8 @@ void WirbelscanDefaults(void) {
   WirbelscanSetup.scan_append_new = 1;
   WirbelscanSetup.HelpText = false;
   WirbelscanSetup.ParseLCN = false;
+  WirbelscanSetup.SignalWaitTime = 1;
+  WirbelscanSetup.LockTimeout = 3;
 }
 
 void WirbelscanUpdateSettings(void) {
@@ -95,6 +97,8 @@ void WirbelscanUpdateSettings(void) {
 //SendInteger("tp_only"           , WirbelscanSetup.tp_only);
   SendInteger("verbosity"         , WirbelscanSetup.verbosity);
   SendInteger("ParseLCN"          , WirbelscanSetup.ParseLCN?1:0);
+  SendInteger("SignalWaitTime"    , WirbelscanSetup.SignalWaitTime);
+  SendInteger("LockTimeout"       , WirbelscanSetup.LockTimeout);
   #undef SendInteger
 }
 
@@ -270,6 +274,14 @@ bool ParseArguments(int argc, char* argv[]) {
      else if ((Argument == "-a") or (Argument == "--adapter")) {
         WirbelscanSetup.adapter = Param;
         i++;
+        }
+     else if (Argument == "--signal-wait-time") {
+        PARAM(IntRange(1,5));
+        WirbelscanSetup.SignalWaitTime = Param;
+        }
+     else if (Argument == "--lock-timeout") {
+        PARAM(IntRange(1,10));
+        WirbelscanSetup.LockTimeout = Param;
         }
      else if (Argument == "--satip-server") {
         WirbelscanSetup.SatipSvr = Param;
@@ -526,6 +538,15 @@ bool ExtHelpText(std::string ProgName) {
   ss << "       -a N, --adapter N" << std::endl;
   ss << "               use device /dev/dvb/adapterN/ [default: auto detect]" << std::endl;
   ss << "               (also allowed: -a /dev/dvb/adapterN/frontendM)" << std::endl;
+  ss << "       --signal-wait-time N" << std::endl;
+  ss << "               wait time in seconds before the presence of some antenna signal is checked" << std::endl;
+  ss << "               after a channel change. Increasing this value will slow down scans, but" << std::endl;
+  ss << "               may help for some devices." << std::endl;
+  ss << "               Valid range for N is 1 to 5. [default: 1]" << std::endl;
+  ss << "       --lock-timeout N" << std::endl;
+  ss << "               timeout in seconds for full lock detection after antenna signal" << std::endl;
+  ss << "               was detected." << std::endl;
+  ss << "               Valid range for N is 1 to 10. [default: 3]" << 
   ss << "       --satip-server <STRING>" << std::endl;
   ss << "               do not auto detect satip server," << std::endl;
   ss << "               but use manual server settings, ie." << std::endl;

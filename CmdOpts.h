@@ -32,6 +32,8 @@ public:
   int scan_remove_invalid;
   int scan_update_existing;
   int scan_append_new;
+  int SignalWaitTime;
+  int LockTimeout;
 //std::vector<TChannel*> SingleTransponder;
 //int tp_only;
   /*********************/

@@ -271,6 +271,40 @@ use device /dev/dvb/adapterN/ [default: auto detect]
 .br
 (also allowed: -a /dev/dvb/adapterN/frontendM)
 .TP
+.B --signal-wait-time N
+This settings allows to tune the wait time before the presence of
+.br
+antenna signal is checked after a channel change. The higher the
+.br
+value, the longer the wait time will be. If no signal is detected,
+.br
+the next channel is choosen. Otherwise, the algorithm starts waiting
+.br
+until getting either a lock (successful reception) or a lock
+.br
+timeout, see setting below. Please note, that increasing this value
+.br
+to values other than the default will increase the time for a full
+.br
+channel scan. time unit is seconds.
+.br
+Valid range is 1..5 [default: 1].
+.br
+.TP
+.B --lock-timeout N
+This settings allows to tune the timeout for lock detection after a
+.br
+antenna signal was detected on a channel. The higher the value, the
+.br
+longer the wait time will be before a channel will be discarded as
+.br
+not working. Increasing this value will slow down scans on weak or
+.br
+disturbed signal conditions. time unit is seconds.
+.br
+Valid range is 1 to 10. [default: 3].
+.br
+.TP
 .B --satip-server <STRING>
 do not auto detect the satip server, but use manual
 .br
