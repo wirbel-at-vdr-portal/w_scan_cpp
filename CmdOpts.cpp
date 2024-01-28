@@ -277,11 +277,11 @@ bool ParseArguments(int argc, char* argv[]) {
         }
      else if (Argument == "--signal-wait-time") {
         PARAM(IntRange(1,5));
-        WirbelscanSetup.SignalWaitTime = Param;
+        WirbelscanSetup.SignalWaitTime = std::stol(Param);
         }
      else if (Argument == "--lock-timeout") {
         PARAM(IntRange(1,10));
-        WirbelscanSetup.LockTimeout = Param;
+        WirbelscanSetup.LockTimeout = std::stol(Param);
         }
      else if (Argument == "--satip-server") {
         WirbelscanSetup.SatipSvr = Param;
@@ -546,7 +546,7 @@ bool ExtHelpText(std::string ProgName) {
   ss << "       --lock-timeout N" << std::endl;
   ss << "               timeout in seconds for full lock detection after antenna signal" << std::endl;
   ss << "               was detected." << std::endl;
-  ss << "               Valid range for N is 1 to 10. [default: 3]" << 
+  ss << "               Valid range for N is 1 to 10. [default: 3]" << std::endl; 
   ss << "       --satip-server <STRING>" << std::endl;
   ss << "               do not auto detect satip server," << std::endl;
   ss << "               but use manual server settings, ie." << std::endl;
