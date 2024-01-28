@@ -381,32 +381,28 @@ void PrintSatellitesDat(std::vector<TChannel>& List) {
      else
         ss << "{5 , ";
 
-     s = std::to_string(t.Frequency);
-     while(s.size() < 5) s += ' ';
-     ss << s << ", ";
+     ss << FrontFill(IntToStr(t.Frequency), 5) << ", ";
  
      if (t.Polarization == 'H')       ss << "0";
      else if (t.Polarization == 'V')  ss << "1";
      else if (t.Polarization == 'L')  ss << "2";
      else if (t.Polarization == 'R')  ss << "3";
      ss << ", ";
- 
-     s = std::to_string(t.Symbolrate);
-     while(s.size() < 5) s += ' ';
-     ss << s << ", ";
 
-     if (t.FEC == 0)        ss << "0 ";
-     else if (t.FEC == 12)  ss << "1 ";
-     else if (t.FEC == 23)  ss << "2 ";
-     else if (t.FEC == 34)  ss << "3 ";
-     else if (t.FEC == 45)  ss << "4 ";
-     else if (t.FEC == 56)  ss << "5 ";
-     else if (t.FEC == 67)  ss << "6 ";
-     else if (t.FEC == 78)  ss << "7 ";
-     else if (t.FEC == 89)  ss << "8 ";
-     else if (t.FEC == 35)  ss << "10";
-     else if (t.FEC == 910) ss << "11";
-     else                   ss << "9 ";
+     ss << FrontFill(IntToStr(t.Symbolrate), 5) << ", "; 
+
+     if (t.FEC == 0)        ss << FrontFill("0" ,2);
+     else if (t.FEC == 12)  ss << FrontFill("1" ,2);
+     else if (t.FEC == 23)  ss << FrontFill("2" ,2);
+     else if (t.FEC == 34)  ss << FrontFill("3" ,2);
+     else if (t.FEC == 45)  ss << FrontFill("4" ,2);
+     else if (t.FEC == 56)  ss << FrontFill("5" ,2);
+     else if (t.FEC == 67)  ss << FrontFill("6" ,2);
+     else if (t.FEC == 78)  ss << FrontFill("7" ,2);
+     else if (t.FEC == 89)  ss << FrontFill("8" ,2);
+     else if (t.FEC == 35)  ss << FrontFill("10",2);
+     else if (t.FEC == 910) ss << FrontFill("11",2);
+     else                   ss << FrontFill("9" ,2);
      ss << ", ";
 
      if (t.Rolloff == 35)      ss << "0";
@@ -415,12 +411,16 @@ void PrintSatellitesDat(std::vector<TChannel>& List) {
      else                      ss << "3";
      ss << ", ";
 
-     if (t.Modulation == 2)      ss << "0 ";
-     else if (t.Modulation == 5) ss << "9 ";
-     else if (t.Modulation == 6) ss << "10";
-     else if (t.Modulation == 7) ss << "11";
-     else                        ss << "6 ";
-     ss << "},              // "
+     if (t.Modulation == 2)      ss << FrontFill("0" ,2);
+     else if (t.Modulation == 5) ss << FrontFill("9" ,2);
+     else if (t.Modulation == 6) ss << FrontFill("10",2);
+     else if (t.Modulation == 7) ss << FrontFill("11",2);
+     else                        ss << FrontFill("6" ,2);
+     ss << ", ";
+
+     ss << FrontFill(IntToStr(t.StreamId),3);
+
+     ss << "},          // "
         << "NID = " << std::to_string(t.NID)
         << ", "
         << "TID = " << std::to_string(t.TID)
