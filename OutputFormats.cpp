@@ -1028,7 +1028,7 @@ void PrintVLCsatip(std::vector<TChannel>& List) {
   size_t indent = 0;
   int srcval = 1;
   cSource* source = Sources.First();
-  if (source)
+  if (source && source->Description())
      srcval = atoi(source->Description());
 
   ss << INDENT << "<?xml"
