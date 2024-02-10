@@ -8,6 +8,7 @@
 #include <fstream>
 #include <iomanip>
 #include <cctype>
+#include <cstdlib>
 #include "Helpers.h"
 #include "OutputFormats.h"
 #include "DiSEqC.h"
