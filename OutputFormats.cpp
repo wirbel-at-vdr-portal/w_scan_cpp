@@ -1026,10 +1026,11 @@ void PrintVLC(std::vector<TChannel>& List) {
 void PrintVLCsatip(std::vector<TChannel>& List) {
   std::stringstream ss;
   size_t indent = 0;
-  int srcval = 1;
   cSource* source = Sources.First();
   if (source && source->Description())
-     srcval = atoi(source->Description());
+      src = strtol(source->Description(), NULL, 0);
+  if (src < 1 || src > 255)
+      src = 1;
 
   ss << INDENT << "<?xml"
      << " version="  << '"' << "1.0"   << '"'
@@ -1160,7 +1161,7 @@ void PrintVLCsatip(std::vector<TChannel>& List) {
            }        
         }
      if (c.Source.find('S') == 0) {
-        ss << "src=" << srcval;
+        ss << "src=" << src;
         ss << "&amp;freq=" << c.Frequency;
         ss << "&amp;pol=" << (char) std::tolower((unsigned char) c.Polarization);
         ss << "&amp;sr=" << c.Symbolrate;
