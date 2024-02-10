@@ -1026,6 +1026,7 @@ void PrintVLC(std::vector<TChannel>& List) {
 void PrintVLCsatip(std::vector<TChannel>& List) {
   std::stringstream ss;
   size_t indent = 0;
+  int src = 1;
   cSource* source = Sources.First();
   if (source && source->Description())
       src = strtol(source->Description(), NULL, 0);
