@@ -40,7 +40,7 @@ Lars Theorin
  - for reporting that the option --satip-server was broken and providing an
    initial patch
  - for an initial patch to enable RTP over TCP on SAT>IP
- - for including all service pids in the VLC SAT>IP output
+ - for fixing the SRC parameter with --output-VLC-satip
 
 Manuel Reimer
  - for pointing to FTBC on wirbelscan plugin (missing <cstdint> in countries.h)
