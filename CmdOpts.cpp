@@ -396,7 +396,7 @@ bool ParseArguments(int argc, char* argv[]) {
      }
 
   if (use_satip) {
-     std::string options("-t 16384");
+     std::string options("-t 65536"); // Set LOG to DbgToStderr
      bool RtpOverTcp = false;
 
      // add further satip plugin options as needed.
