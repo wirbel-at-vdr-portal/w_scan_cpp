@@ -187,5 +187,5 @@
   to convert quotation mark, ampersand, apostrophe, less-than sign,
   greater-than sign to the five default XML char entities.
 * prefer StrToInt and LeftFill/RightFill in output formats
-* include all service pids in the VLC SAT>IP output
 * fix SRC parameter with VLC output for SAT>IP
+* include all service pids in the VLC SAT>IP output
