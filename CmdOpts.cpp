@@ -90,6 +90,7 @@ void WirbelscanUpdateSettings(void) {
   SendInteger("DVBC_QAM"          , WirbelscanSetup.DVBC_QAM);
   SendInteger("DVBC_Symbolrate"   , WirbelscanSetup.DVBC_Symbolrate);
   SendInteger("DVBT_Inversion"    , WirbelscanSetup.DVBT_Inversion);
+  SendInteger("enable_s2"         , WirbelscanSetup.enable_s2);
   SendInteger("logFile"           , WirbelscanSetup.logFile);
   SendInteger("SatIndex"          , WirbelscanSetup.SatIndex);
   SendInteger("scanflags"         , WirbelscanSetup.scanflags);
@@ -278,6 +279,10 @@ bool ParseArguments(int argc, char* argv[]) {
      else if (Argument == "--signal-wait-time") {
         PARAM(IntRange(1,5));
         WirbelscanSetup.SignalWaitTime = std::stol(Param);
+        }
+     else if (Argument == "--modulation-gen") {
+        PARAM(IntRange(0,1));
+        WirbelscanSetup.enable_s2 = !std::stol(Param);
         }
      else if (Argument == "--lock-timeout") {
         PARAM(IntRange(1,10));
@@ -543,6 +548,9 @@ bool ExtHelpText(std::string ProgName) {
   ss << "               after a channel change. Increasing this value will slow down scans, but" << std::endl;
   ss << "               may help for some devices." << std::endl;
   ss << "               Valid range for N is 1 to 5. [default: 1]" << std::endl;
+  ss << "       --modulation-gen N" << std::endl;
+  ss << "               0 = use all available modulation generations [default]" << std::endl;
+  ss << "               1 = use only gen1 (DVB-S/T) and disable gen2 (DVB-S2/T2)" << std::endl;
   ss << "       --lock-timeout N" << std::endl;
   ss << "               timeout in seconds for full lock detection after antenna signal" << std::endl;
   ss << "               was detected." << std::endl;
