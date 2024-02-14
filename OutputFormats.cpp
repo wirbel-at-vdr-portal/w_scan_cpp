@@ -1192,11 +1192,11 @@ void PrintVLCsatip(std::vector<TChannel>& List) {
      ss << "&amp;pids=0,16,17,18";
      if (c.PMT > 0)           ss << ',' << c.PMT;
      if (c.VPID.PID > 0)      ss << ',' << c.VPID.PID;
-     if (c.APIDs.Count() > 0) for (int i=0; i < c.APIDs.Count(); i++)
+     for (int i=0; i < c.APIDs.Count(); i++)
                               ss << ',' << c.APIDs[i].PID;
-     if (c.DPIDs.Count() > 0) for (int i=0; i < c.DPIDs.Count(); i++)
+     for (int i=0; i < c.DPIDs.Count(); i++)
                               ss << ',' << c.DPIDs[i].PID;
-     if (c.SPIDs.Count() > 0) for (int i=0; i < c.SPIDs.Count(); i++)
+     for (int i=0; i < c.SPIDs.Count(); i++)
                               ss << ',' << c.SPIDs[i].PID;
      if (c.TPID > 0)          ss << ',' << c.TPID;
      ss << "</location>" << std::endl;
