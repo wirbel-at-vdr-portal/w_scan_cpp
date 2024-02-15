@@ -826,27 +826,27 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
         while(freq_MHz and (freq_MHz > 1000.0)) freq_MHz /= 1000.0;
         }
 
-     if (c.Source == "A" and !satip) {
+     if (!satip and c.Source == "A") {
         ss << INDENT << "<location>atsc://frequency="  << freq_Hz << "</location>" << std::endl;
         }
-     if (c.Source == "C" and !satip) {
+     if (!satip and c.Source == "C") {
         ss << INDENT << "<location>dvb-c://frequency=" << freq_Hz << "</location>" << std::endl;
         }
-     if (c.Source == "T" and !satip) {
+     if (!satip and c.Source == "T") {
         ss << INDENT << "<location>dvb-t";
         if (c.DelSys == 1) ss << "2";
         ss << "://frequency=" << freq_Hz << "</location>" << std::endl;
         }
-     if (c.Source.find('S') == 0 and !satip) {
+     if (!satip and c.Source.find('S') == 0) {
         ss << INDENT << "<location>dvb-s";
         if (c.DelSys == 1) ss << "2";
         }
 
-     if (c.Source == "A" and satip) {
+     if (satip and c.Source == "A") {
         ErrorMessage("ATSC is not yet supported in SAT>IP");
         return;
         }
-     if (c.Source == "C" and satip) {
+     if (satip and c.Source == "C") {
         ss << INDENT << "<location>rtsp://" << WirbelscanSetup.SatipAddr << "/?";
                                           ss << "freq=" << freq_MHz;
         if (c.DelSys == 0) {
@@ -870,7 +870,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
            if (c.StreamId != 999)         ss << "&amp;plp=" << c.StreamId;
            }
         }
-     if (c.Source == "T" and satip) {
+     if (satip and c.Source == "T") {
         ss << INDENT << "<location>rtsp://" << WirbelscanSetup.SatipAddr << "/?";
                                        ss << "freq=" << freq_MHz;
         double bw = c.Bandwidth;
@@ -913,7 +913,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
                                        ss << "&amp;sm="   << c.MISO;
            }
         }
-     if ((c.Source.find('S') == 0) and satip) {
+     if (satip and (c.Source.find('S') == 0)) {
         ss << INDENT << "<location>rtsp://" << WirbelscanSetup.SatipAddr << "/?";
                                ss << "src="       << src;
                                ss << "&amp;freq=" << c.Frequency;
@@ -958,7 +958,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
         ss << "</location>" << std::endl;
         }
 
-     if (c.Source == "A" and !satip) {
+     if (!satip and c.Source == "A") {
         ss << INDENT << "<extension application=" << '"' << AppUrl << '"' << ">" << std::endl;
         indent++;
 
@@ -989,7 +989,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
            ss << "</vlc:option>" << std::endl;
            }
         }
-     if (c.Source == "C" and !satip) {
+     if (!satip and c.Source == "C") {
         ss << INDENT << "<extension application=" << '"' << AppUrl << '"' << ">" << std::endl;
         indent++;
 
@@ -1016,7 +1016,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
         if (c.Inversion != 999)
            ss << INDENT << "<vlc:option>" << "dvb-inversion=" << c.Inversion << "</vlc:option>" << std::endl;
         }
-     if (c.Source == "T" and !satip) {
+     if (!satip and c.Source == "T") {
         ss << INDENT << "<extension application=" << '"' << AppUrl << '"' << ">" << std::endl;
         indent++;
 
@@ -1089,7 +1089,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
               ss << INDENT << "<vlc:option>" << "dvb-plp-id=" << c.StreamId << "</vlc:option>" << std::endl;
            }
         }
-     if ((c.Source.find('S') == 0) and !satip) {
+     if (!satip and (c.Source.find('S') == 0)) {
         ss << INDENT << "<extension application=" << '"' << AppUrl << '"' << ">" << std::endl;
         indent++;
 
