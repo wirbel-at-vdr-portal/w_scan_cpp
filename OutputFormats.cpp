@@ -753,15 +753,20 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
   std::stringstream ss;
   size_t indent = 0;
 
-  auto t = time(nullptr);
-  auto tm = localtime(&t);
-  std::stringstream date; // "yyyy.mm.ddTHH:MM:SS"
-  date <<        IntToStr(1900 + tm->tm_year, 4, false, '0');
-  date << "-" << IntToStr(1    + tm->tm_mon , 2, false, '0');
-  date << "-" << IntToStr(0    + tm->tm_mday, 2, false, '0');
-  date << "T" << IntToStr(0    + tm->tm_hour, 2, false, '0');
-  date << ":" << IntToStr(0    + tm->tm_min , 2, false, '0');
-  date << ":" << IntToStr(0    + tm->tm_sec , 2, false, '0');
+  std::stringstream sdate;
+  std::string date; // "yyyy.mm.ddTHH:MM:SS"
+  time_t timeepoch;
+  struct tm timeinfo;
+  if (time(&timeepoch) > 0)
+      if (localtime_r(&timeepoch, &timeinfo)) {
+          sdate <<        IntToStr(1900 + timeinfo.tm_year, 4, false, '0');
+          sdate << "-" << IntToStr(1    + timeinfo.tm_mon , 2, false, '0');
+          sdate << "-" << IntToStr(0    + timeinfo.tm_mday, 2, false, '0');
+          sdate << "T" << IntToStr(0    + timeinfo.tm_hour, 2, false, '0');
+          sdate << ":" << IntToStr(0    + timeinfo.tm_min , 2, false, '0');
+          sdate << ":" << IntToStr(0    + timeinfo.tm_sec , 2, false, '0');
+      }
+  date = sdate.str();
 
   int src = 1;
   cSource* source = Sources.First();
@@ -784,7 +789,8 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
 
   ss << INDENT << "<title>DVB Playlist</title>" << std::endl;
   ss << INDENT << "<creator>w_scan_cpp</creator>" << std::endl;
-  ss << INDENT << "<date>" << date.str() << "</date>" << std::endl;
+  if (!date.empty())
+      ss << INDENT << "<date>" << date << "</date>" << std::endl;
   ss << INDENT << "<info>https://gen2vdr.de/wirbel/w_scan_cpp/index2.html</info>" << std::endl;
   ss << INDENT << "<trackList>" << std::endl;
   indent++;
