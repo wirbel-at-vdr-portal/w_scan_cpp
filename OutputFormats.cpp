@@ -752,14 +752,17 @@ void XmlString(std::string& s) {
 void PrintVLC(std::vector<TChannel>& List, bool satip) {
   std::stringstream ss;
   size_t indent = 0;
+
   auto t = time(nullptr);
   auto tm = localtime(&t);
-  auto year  = IntToStr(1900 + tm->tm_year, 4, false, '0');
-  auto month = IntToStr(1    + tm->tm_mon , 2, false, '0');
-  auto day   = IntToStr(0    + tm->tm_mday, 2, false, '0');
-  auto hour  = IntToStr(0    + tm->tm_hour, 2, false, '0');
-  auto min   = IntToStr(0    + tm->tm_min , 2, false, '0');
-  auto sec   = IntToStr(0    + tm->tm_sec , 2, false, '0');
+  std::stringstream date; // "yyyy.mm.ddTHH:MM:SS"
+  date <<        IntToStr(1900 + tm->tm_year, 4, false, '0');
+  date << "-" << IntToStr(1    + tm->tm_mon , 2, false, '0');
+  date << "-" << IntToStr(0    + tm->tm_mday, 2, false, '0');
+  date << "T" << IntToStr(0    + tm->tm_hour, 2, false, '0');
+  date << ":" << IntToStr(0    + tm->tm_min , 2, false, '0');
+  date << ":" << IntToStr(0    + tm->tm_sec , 2, false, '0');
+
   int src = 1;
   cSource* source = Sources.First();
   if (source and source->Description())
@@ -781,7 +784,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
 
   ss << INDENT << "<title>DVB Playlist</title>" << std::endl;
   ss << INDENT << "<creator>w_scan_cpp</creator>" << std::endl;
-  ss << INDENT << "<date>" + year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec + "</date>" << std::endl;
+  ss << INDENT << "<date>" << date.str() << "</date>" << std::endl;
   ss << INDENT << "<info>https://gen2vdr.de/wirbel/w_scan_cpp/index2.html</info>" << std::endl;
   ss << INDENT << "<trackList>" << std::endl;
   indent++;
