@@ -762,9 +762,9 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
   auto sec   = IntToStr(0    + tm->tm_sec , 2, false, '0');
   int src = 1;
   cSource* source = Sources.First();
-  if (source && source->Description())
+  if (source and source->Description())
       src = strtol(source->Description(), NULL, 0);
-  if (src < 1 || src > 255)
+  if (src < 1 or src > 255)
       src = 1;
 
   ss << INDENT << "<?xml"
@@ -816,34 +816,34 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
         auto freq_Min = [](std::string Source) -> uint64_t {
             return (Source.find('S') == 0) ? 3000000000ULL : 50000000ULL;
             };
-        while(freq_Hz && (freq_Hz < freq_Min(c.Source))) freq_Hz *= 1000;
+        while(freq_Hz and (freq_Hz < freq_Min(c.Source))) freq_Hz *= 1000;
         }
      else {
-        while(freq_Hz  && (freq_Hz < 1000000)) freq_Hz  *= 1000;
-        while(freq_MHz && (freq_MHz > 1000.0)) freq_MHz /= 1000.0;
+        while(freq_Hz  and (freq_Hz < 1000000)) freq_Hz  *= 1000;
+        while(freq_MHz and (freq_MHz > 1000.0)) freq_MHz /= 1000.0;
         }
 
-     if (c.Source == "A" && !satip) {
+     if (c.Source == "A" and !satip) {
         ss << INDENT << "<location>atsc://frequency="  << freq_Hz << "</location>" << std::endl;
         }
-     if (c.Source == "C" && !satip) {
+     if (c.Source == "C" and !satip) {
         ss << INDENT << "<location>dvb-c://frequency=" << freq_Hz << "</location>" << std::endl;
         }
-     if (c.Source == "T" && !satip) {
+     if (c.Source == "T" and !satip) {
         ss << INDENT << "<location>dvb-t";
         if (c.DelSys == 1) ss << "2";
         ss << "://frequency=" << freq_Hz << "</location>" << std::endl;
         }
-     if (c.Source.find('S') == 0 && !satip) {
+     if (c.Source.find('S') == 0 and !satip) {
         ss << INDENT << "<location>dvb-s";
         if (c.DelSys == 1) ss << "2";
         }
 
-     if (c.Source == "A" && satip) {
+     if (c.Source == "A" and satip) {
         ErrorMessage("ATSC is not yet supported in SAT>IP");
         return;
         }
-     if (c.Source == "C" && satip) {
+     if (c.Source == "C" and satip) {
         ss << INDENT << "<location>rtsp://" << WirbelscanSetup.SatipAddr << "/?";
                                           ss << "freq=" << freq_MHz;
         if (c.DelSys == 0) {
@@ -867,7 +867,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
            if (c.StreamId != 999)         ss << "&amp;plp=" << c.StreamId;
            }
         }
-     if (c.Source == "T" && satip) {
+     if (c.Source == "T" and satip) {
         ss << INDENT << "<location>rtsp://" << WirbelscanSetup.SatipAddr << "/?";
                                        ss << "freq=" << freq_MHz;
         double bw = c.Bandwidth;
@@ -910,7 +910,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
                                        ss << "&amp;sm="   << c.MISO;
            }
         }
-     if ((c.Source.find('S') == 0) && satip) {
+     if ((c.Source.find('S') == 0) and satip) {
         ss << INDENT << "<location>rtsp://" << WirbelscanSetup.SatipAddr << "/?";
                                ss << "src="       << src;
                                ss << "&amp;freq=" << c.Frequency;
@@ -955,7 +955,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
         ss << "</location>" << std::endl;
         }
 
-     if (c.Source == "A" && !satip) {
+     if (c.Source == "A" and !satip) {
         ss << INDENT << "<extension application=" << '"' << AppUrl << '"' << ">" << std::endl;
         indent++;
 
@@ -968,7 +968,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
 
         if (c.LCN != -1)
            ss << INDENT << "<vlc:option>" << "logical-channel-number=" << c.LCN << "</vlc:option>" << std::endl;
-        if (c.LCN != -1 && c.LCN_minor != -1)
+        if (c.LCN != -1 and c.LCN_minor != -1)
            ss << INDENT << "<vlc:option>" << "logical-channel-number-minor=" << c.LCN_minor << "</vlc:option>" << std::endl;
 
         ss << INDENT << "<vlc:option>" << "dvb-ts-id=" << c.TID << "</vlc:option>" << std::endl;
@@ -986,7 +986,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
            ss << "</vlc:option>" << std::endl;
            }
         }
-     if (c.Source == "C" && !satip) {
+     if (c.Source == "C" and !satip) {
         ss << INDENT << "<extension application=" << '"' << AppUrl << '"' << ">" << std::endl;
         indent++;
 
@@ -1013,7 +1013,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
         if (c.Inversion != 999)
            ss << INDENT << "<vlc:option>" << "dvb-inversion=" << c.Inversion << "</vlc:option>" << std::endl;
         }
-     if (c.Source == "T" && !satip) {
+     if (c.Source == "T" and !satip) {
         ss << INDENT << "<extension application=" << '"' << AppUrl << '"' << ">" << std::endl;
         indent++;
 
@@ -1086,7 +1086,7 @@ void PrintVLC(std::vector<TChannel>& List, bool satip) {
               ss << INDENT << "<vlc:option>" << "dvb-plp-id=" << c.StreamId << "</vlc:option>" << std::endl;
            }
         }
-     if ((c.Source.find('S') == 0) && !satip) {
+     if ((c.Source.find('S') == 0) and !satip) {
         ss << INDENT << "<extension application=" << '"' << AppUrl << '"' << ">" << std::endl;
         indent++;
 
