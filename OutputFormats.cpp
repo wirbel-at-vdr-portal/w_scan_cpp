@@ -749,7 +749,7 @@ void XmlString(std::string& s) {
   ReplaceAll(s, "\"", "&quot;");
 }
 
-void PrintVLCcommon(std::vector<TChannel>& List, bool satip) {
+void PrintVLC(std::vector<TChannel>& List, bool satip) {
   std::stringstream ss;
   size_t indent = 0;
   auto t = time(nullptr);
@@ -1190,14 +1190,6 @@ void PrintVLCcommon(std::vector<TChannel>& List, bool satip) {
   ss << INDENT << "</playlist>" << std::endl;
 
   OutputLine(ss.str());
-}
-
-void PrintVLC(std::vector<TChannel>& List) {
-  PrintVLCcommon(List, false);
-}
-
-void PrintVLCsatip(std::vector<TChannel>& List) {
-  PrintVLCcommon(List, true);
 }
 
 
