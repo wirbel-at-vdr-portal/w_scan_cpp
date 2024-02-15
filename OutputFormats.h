@@ -8,8 +8,7 @@
 #include "Helpers.h"
 
 void PrintVDR(std::vector<TChannel>& List);
-void PrintVLC(std::vector<TChannel>& List);
-void PrintVLCsatip(std::vector<TChannel>& List);
+void PrintVLC(std::vector<TChannel>& List, bool satip = false);
 void PrintXine(std::vector<TChannel>& List, bool mplayer = false);
 void PrintInitial(std::vector<TChannel>& List);
 void PrintXML(std::vector<TChannel>& List);
