@@ -64,7 +64,6 @@ void WirbelscanDefaults(void) {
   WirbelscanSetup.DVBC_QAM = 0;
   WirbelscanSetup.DVBC_Symbolrate = 0;
   WirbelscanSetup.DVBT_Inversion = 0;
-  WirbelscanSetup.enable_s2 = 1;
   WirbelscanSetup.logFile = 3;
   WirbelscanSetup.verbosity = 4;
   WirbelscanSetup.scan_remove_invalid = 0;
