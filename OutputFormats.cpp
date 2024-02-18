@@ -373,6 +373,7 @@ void PrintSatellitesDat(std::vector<TChannel>& List) {
   ss << " * ident  : " + SatNames[WirbelscanSetup.SatIndex] + "\n";
   ss << " * orbital: " + Orbital + "\n";
   ss << " * sat_pos: " + Position + "\n";
+  ss << " * date   : " + TimeStr(time(nullptr)) + "\n";
   ss << " *******************************************************************************/\n"; 
   ss << "B(__" << Id << ")\n";
 
