@@ -190,3 +190,4 @@
 * fix SRC parameter with VLC output for SAT>IP
 * include all service pids in the VLC SAT>IP output
 * PrintIni(): replace localtime() by TimeStr()
+* PrintInitial(): replace localtime() by TimeStr()
