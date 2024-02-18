@@ -373,7 +373,7 @@ void PrintSatellitesDat(std::vector<TChannel>& List) {
   ss << " * ident  : " + SatNames[WirbelscanSetup.SatIndex] + "\n";
   ss << " * orbital: " + Orbital + "\n";
   ss << " * sat_pos: " + Position + "\n";
-  ss << " * date   : " + TimeStr(time(nullptr)) + "\n";
+  ss << " * date   : " + TimeStr() + "\n";
   ss << " *******************************************************************************/\n"; 
   ss << "B(__" << Id << ")\n";
 
@@ -457,7 +457,7 @@ void PrintIni(std::vector<TChannel>& List) {
   ss << "; https://www.gen2vdr.de/wirbel/w_scan_cpp/index2.html\n";
   ss << ";------------------------------------------------------------------------------\n";
   ss << "; location and provider     : \n";
-  ss << "; date (dd.mm.yyyy HH:MM:SS): " << TimeStr(time(nullptr)) << "\n";
+  ss << "; date (dd.mm.yyyy HH:MM:SS): " << TimeStr() << "\n";
   ss << "; provided by (opt)         : --wirbel--\n\n";
   ss << "[SATTYPE]" << std::endl;
 
@@ -1243,7 +1243,7 @@ void PrintInitial(std::vector<TChannel>& List) {
   OutputLine("# https://www.gen2vdr.de/wirbel/w_scan_cpp/index2.html");
   OutputLine("#------------------------------------------------------------------------------");
   OutputLine("# location and provider     : ");
-  OutputLine("# date (dd.mm.yyyy HH:MM:SS): " + TimeStr(time(nullptr)));
+  OutputLine("# date (dd.mm.yyyy HH:MM:SS): " + TimeStr());
   OutputLine("# provided by (opt)         : --wirbel--\n\n");
 
   for(auto c:UniqueTransponders(List)) {
