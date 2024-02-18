@@ -33,7 +33,7 @@ FREETYPE2=freetype2
 FONTCONFIG=fontconfig
 LIBPUGIXML=pugixml
 LIBREPFUNC=librepfunc
-LIBREPFUNC_MINVERSION=1.1.0
+LIBREPFUNC_MINVERSION=1.9.0
 
 # /* require either PKG_CONFIG_PATH to be set, or, a working pkg-config */
 HAVE_LIBJPEG              =$(shell if $(PKG_CONFIG) --exists                                   $(LIBJPEG);    then echo "1"; else echo "0"; fi )
