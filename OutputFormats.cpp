@@ -733,6 +733,8 @@ void PrintDat(std::vector<TChannel>& List, std::string BinaryFile) {
 
 /*******************************************************************************
  * VLC output
+ *    Satip = false: local dvb device
+ *    Satip = true : SAT>IP server
  ******************************************************************************/
 void XmlString(std::string& s) {
   if (s.empty()) return;
@@ -744,7 +746,7 @@ void XmlString(std::string& s) {
   ReplaceAll(s, "\"", "&quot;");
 }
 
-void PrintVLC(std::vector<TChannel>& List) {
+void PrintVLC(std::vector<TChannel>& List, bool Satip) {
   std::stringstream ss;
   size_t indent = 0;
 
@@ -769,7 +771,13 @@ void PrintVLC(std::vector<TChannel>& List) {
   const char* AppUrl = "http://www.videolan.org/vlc/playlist/0";
   size_t TitleNumber = 1;
 
-  for(auto c:UniqueChannels(List)) {
+  for(auto& c:UniqueChannels(List)) {
+
+     if (Satip and c.Source == "A") {
+        ErrorMessage("ATSC is not yet supported in SAT>IP");
+        continue;
+        }
+
      ss << INDENT << "<track>" << std::endl;
      indent++;
 
@@ -789,437 +797,323 @@ void PrintVLC(std::vector<TChannel>& List) {
         title = "Channel";
      ss << INDENT << "<title>" << title << "</title>" << std::endl;
 
-     uint64_t freq_Hz = c.Frequency;
      auto freq_Min = [](std::string Source) -> uint64_t {
         return (Source.find('S') == 0) ? 3000000000ULL : 50000000ULL;
         };
 
-     while(freq_Hz && (freq_Hz < freq_Min(c.Source))) freq_Hz *= 1000;
+     uint64_t freq_Hz = c.Frequency;
 
-     if (c.Source == "A") {
-        ss << INDENT << "<location>atsc://frequency=" << freq_Hz << "</location>" << std::endl;
+     if (not Satip) {
+        ss << INDENT << "<location>";
 
-        ss << INDENT << "<extension application=" << '"' << AppUrl << '"' << ">" << std::endl;
-        indent++;
+        if (c.Source == "A")
+           ss << "atsc";
+        if (c.Source == "C")
+           ss << "dvb-c";
+        if (c.Source == "T")
+           ss << "dvb-t";
+        if (c.Source.find('S') == 0)
+           ss << "dvb-s";
 
-        ss << INDENT << "<vlc:id>" << TitleNumber;
-        if (c.LCN_minor != -1)
-           ss << "." << c.LCN_minor;
-        ss << "</vlc:id>" << std::endl;
+        if (c.DelSys == 1)
+           ss << "2";
 
-        if (c.LCN != -1) {
-           ss << INDENT << "<vlc:option>"
-              << "logical-channel-number=" << c.LCN
-              << "</vlc:option>" << std::endl;
-           if (c.LCN_minor != -1)
-              ss << INDENT << "<vlc:option>"
-                 << "logical-channel-number-minor=" << c.LCN_minor
-                 << "</vlc:option>" << std::endl;
-           }
-
-        ss << INDENT << "<vlc:option>" << "dvb-ts-id=" << c.TID << "</vlc:option>" << std::endl;
-        ss << INDENT << "<vlc:option>" << "program="   << c.SID << "</vlc:option>" << std::endl;
-
-        if (c.Modulation != 999) {
-           ss << INDENT << "<vlc:option>dvb-modulation=";
-	        if (c.Modulation == 10)         ss << "8VSB";
-	        else if (c.Modulation == 11)    ss << "16VSB";
-	        else if (c.Modulation == 64)    ss << "64QAM"; // may be unused at all.
-	        else if (c.Modulation == 256)   ss << "256QAM";
-           else                            ss << "AUTO";
-           ss << "</vlc:option>" << std::endl;
-           }
-
-        indent--;
-        ss << INDENT << "</extension>" << std::endl;
+        while(freq_Hz && (freq_Hz < freq_Min(c.Source))) freq_Hz *= 1000;
+        ss << "://" << "frequency=" << freq_Hz << "</location>" << std::endl;
         }
-     if (c.Source == "C") {
-        ss << INDENT << "<location>dvb-c://frequency=" << freq_Hz << "</location>" << std::endl;
+     else {
+        double freq_MHz = c.Frequency;
+        while(freq_Hz  && (freq_Hz < 1000000)) freq_Hz *= 1000;
+        while(freq_MHz && (freq_MHz > 1000.0)) freq_MHz /= 1000.0;
 
-        ss << INDENT << "<extension" << " application=" << '"' << AppUrl << '"' << ">" << std::endl;
-        indent++;
+        ss << INDENT << "<location>rtsp://" << WirbelscanSetup.SatipAddr << "/?";
 
-        if (c.LCN != -1)
-           ss << INDENT << "<vlc:option>" << "logical-channel-number=" << c.LCN << "</vlc:option>" << std::endl;
+        if (c.Source == "C") {
+           ss << "freq=" << freq_MHz;
+           ss << "&amp;msys=dvbc";
+           if (c.DelSys == 0) {
+	           if (c.Modulation == 16)         ss << "&amp;mtype=16qam";
+	           else if (c.Modulation == 32)    ss << "&amp;mtype=32qam";
+	           else if (c.Modulation == 64)    ss << "&amp;mtype=64qam";
+	           else if (c.Modulation == 128)   ss << "&amp;mtype=128qam";
+	           else if (c.Modulation == 256)   ss << "&amp;mtype=256qam";
 
-        ss << INDENT << "<vlc:id>"     << TitleNumber  << "</vlc:id>" << std::endl;
-        ss << INDENT << "<vlc:option>" << "dvb-ts-id=" << c.TID             << "</vlc:option>" << std::endl;
-        ss << INDENT << "<vlc:option>" << "program="   << c.SID << "</vlc:option>" << std::endl;
-        ss << INDENT << "<vlc:option>" << "dvb-srate=" << c.Symbolrate*1000 << "</vlc:option>" << std::endl;
+              ss << "&amp;sr=" << c.Symbolrate;
 
-        if (c.Modulation != 999) {
-           ss << INDENT << "<vlc:option>" << "dvb-modulation=";
-	        if (c.Modulation == 32)         ss << "32QAM";
-	        else if (c.Modulation == 64)    ss << "64QAM";
-	        else if (c.Modulation == 128)   ss << "128QAM";
-	        else if (c.Modulation == 256)   ss << "256QAM";
-           else                            ss << "AUTO";
-           ss << "</vlc:option>" << std::endl;
+              if (c.Inversion != 999)
+                 ss << "&amp;specinv=" << c.Inversion;
+              }
+           else {
+              ss << "2"; // DVB-C2
+
+              int bw = c.Bandwidth;
+              while(bw > 999) bw = round(bw/1000.0);
+
+              if (bw != 999)
+                 ss << "&amp;bw=" << bw;
+              if (c.StreamId != 999)
+                 ss << "&amp;plp=" << c.StreamId;
+              }
+
            }
-        if (c.Inversion != 999) {
-           ss << INDENT << "<vlc:option>" << "dvb-inversion=" << c.Inversion << "</vlc:option>" << std::endl;
+        if (c.Source == "T") {
+           ss << "freq=" << freq_MHz;
+
+           double bw = c.Bandwidth;
+           while(bw >= 1000.0) bw /= 1000.0;
+           ss << "&amp;bw=" << bw;
+
+           if      (c.Transmission == 2)  ss << "&amp;tmode=2k";
+           else if (c.Transmission == 4)  ss << "&amp;tmode=4k";
+           else if (c.Transmission == 8)  ss << "&amp;tmode=8k";
+           else if (c.Transmission == 1)  ss << "&amp;tmode=1k";
+           else if (c.Transmission == 16) ss << "&amp;tmode=16k";
+           else if (c.Transmission == 32) ss << "&amp;tmode=32k";
+
+           if (c.Modulation == 2)        ss << "&amp;mtype=qpsk";
+           else if (c.Modulation == 16)  ss << "&amp;mtype=16qam";
+           else if (c.Modulation == 64)  ss << "&amp;mtype=64qam";
+           else if (c.Modulation == 256) ss << "&amp;mtype=256qam";
+
+           if (c.Guard == 4)             ss << "&amp;gi=14";
+           else if (c.Guard == 8)        ss << "&amp;gi=18";
+           else if (c.Guard == 16)       ss << "&amp;gi=116";
+           else if (c.Guard == 32)       ss << "&amp;gi=132";
+           else if (c.Guard == 128)      ss << "&amp;gi=1128";
+           else if (c.Guard == 19128)    ss << "&amp;gi=19128";
+           else if (c.Guard == 19256)    ss << "&amp;gi=19256";
+
+           if (c.FEC == 12)         ss << "&amp;fec=12";
+           else if (c.FEC == 35)    ss << "&amp;fec=35";
+           else if (c.FEC == 23)    ss << "&amp;fec=23";
+           else if (c.FEC == 34)    ss << "&amp;fec=34";
+           else if (c.FEC == 45)    ss << "&amp;fec=45";
+           else if (c.FEC == 56)    ss << "&amp;fec=56";
+           else if (c.FEC == 78)    ss << "&amp;fec=78";
+
+           if (c.DelSys == 0) {
+              ss << "&amp;msys=dvbt";
+              }
+           else {
+              ss << "&amp;msys=dvbt2";
+              ss << "&amp;plp=" << c.StreamId;
+              ss << "&amp;t2id=" << c.SystemId;
+              ss << "&amp;sm=" << c.MISO;
+              }
            }
+        if (c.Source.find('S') == 0) {
+           int src = 1;
+           cSource* source = Sources.First();
+           if (source && source->Description())
+              src = strtol(source->Description(), NULL, 0);
+           if (src < 1 || src > 255)
+              src = 1;
 
-        indent--;
-        ss << INDENT << "</extension>" << std::endl;
-        }
-     if (c.Source == "T") {
-        ss << INDENT << "<location>dvb-t";
-        if (c.DelSys == 1) ss << "2";
-        ss << "://frequency=" << freq_Hz << "</location>" << std::endl;
-
-        ss << INDENT << "<extension" << " application=" << '"' << AppUrl << '"' << ">" << std::endl;
-        indent++;
-
-        if (c.LCN != -1)
-           ss << INDENT << "<vlc:option>" << "logical-channel-number=" << c.LCN << "</vlc:option>" << std::endl;
-
-        int bw = c.Bandwidth;
-        while(bw > 999) bw = round(bw/1000.0);
-
-        ss << INDENT << "<vlc:id>"     << TitleNumber      << "</vlc:id>" << std::endl;
-        ss << INDENT << "<vlc:option>" << "dvb-ts-id="     << c.TID << "</vlc:option>" << std::endl;
-        ss << INDENT << "<vlc:option>" << "program="       << c.SID << "</vlc:option>" << std::endl;
-        ss << INDENT << "<vlc:option>" << "dvb-bandwidth=" << bw    << "</vlc:option>" << std::endl;
-
-        if (c.Inversion    != 999)
-           ss << INDENT << "<vlc:option>dvb-inversion=" << c.Inversion << "</vlc:option>" << std::endl;
-        if (c.FEC          != 999) {
-           ss << INDENT << "<vlc:option>dvb-code-rate-hp=";
-	        if (c.FEC == 12)         ss << "1/2";
-	        else if (c.FEC == 23)    ss << "2/3";
-	        else if (c.FEC == 34)    ss << "3/4";
-	        else if (c.FEC == 45)    ss << "4/5";
-	        else if (c.FEC == 56)    ss << "5/6";
-	        else if (c.FEC == 67)    ss << "6/7";
-	        else if (c.FEC == 78)    ss << "7/8";
-	        else if (c.FEC == 35)    ss << "3/5";
-	        else if (c.FEC == 89)    ss << "8/9";
-	        else if (c.FEC == 910)   ss << "9/10";
-	        else if (c.FEC == 25)    ss << "2/5";
-	        else if (c.FEC == 14)    ss << "1/4";
-	        else if (c.FEC == 13)    ss << "1/3";
-           else                     ss << "-1";
-           ss << "</vlc:option>" << std::endl;
-           }
-        if (c.Modulation != 999) {
-           ss << INDENT << "<vlc:option>" << "dvb-modulation=";
-	        if (c.Modulation == 2)        ss << "QPSK";
-	        else if (c.Modulation == 16)  ss << "16QAM";
-	        else if (c.Modulation == 64)  ss << "64QAM";
-	        else if (c.Modulation == 256) ss << "256QAM";
-           else                          ss << "AUTO";
-           ss << "</vlc:option>" << std::endl;
-           }
-        if (c.Transmission != 999)
-           ss << INDENT << "<vlc:option>" << "dvb-transmission=" << c.Transmission << "</vlc:option>" << std::endl;
-        if (c.Guard != 999) {
-           ss << INDENT << "<vlc:option>" << "dvb-guard=";
-	        if (c.Guard == 4)             ss << "1/4";
-	        else if (c.Guard == 8)        ss << "1/8";
-	        else if (c.Guard == 16)       ss << "1/16";
-	        else if (c.Guard == 32)       ss << "1/32";
-	        else if (c.Guard == 128)      ss << "1/128";
-	        else if (c.Guard == 19128)    ss << "19/128";
-	        else if (c.Guard == 19256)    ss << "19/256";
-           else                          ss << "AUTO";
-           ss << "</vlc:option>" << std::endl;
-           }
-        if (c.DelSys == 1) {
-           if (c.StreamId  != 999)
-              ss << INDENT << "<vlc:option>" << "dvb-plp-id=" << c.StreamId << "</vlc:option>" << std::endl;
-           }
-        indent--;
-        ss << INDENT << "</extension>" << std::endl;
-        }
-     if (c.Source.find('S') == 0) {
-        ss << INDENT << "<location>dvb-s";
-        if (c.DelSys == 1) ss << "2";
-        ss << "://frequency=" << freq_Hz << "</location>" << std::endl;
-
-        ss << INDENT << "<extension" << " application=" << '"' << AppUrl << '"' << ">" << std::endl;
-        indent++;
-
-        if (c.LCN != -1)
-           ss << INDENT << "<vlc:option>" << "logical-channel-number=" << c.LCN << "</vlc:option>" << std::endl;
-
-        ss << INDENT << "<vlc:id>"     << TitleNumber         << "</vlc:id>" << std::endl;
-        ss << INDENT << "<vlc:option>" << "dvb-ts-id="        << c.TID << "</vlc:option>" << std::endl;
-        ss << INDENT << "<vlc:option>" << "program="          << c.SID << "</vlc:option>" << std::endl;
-        ss << INDENT << "<vlc:option>" << "dvb-polarization=" << c.Polarization << "</vlc:option>" << std::endl;
-        ss << INDENT << "<vlc:option>" << "dvb-srate="        << c.Symbolrate*1000 << "</vlc:option>" << std::endl;
-        if (c.Inversion    != 999)
-           ss << INDENT << "<vlc:option>dvb-inversion=" << c.Inversion << "</vlc:option>" << std::endl;
-        if (c.FEC          != 999) {
-           ss << INDENT << "<vlc:option>dvb-fec=";
-	        if (c.FEC == 12)       ss << "1/2";
-	        else if (c.FEC == 23)  ss << "2/3";
-	        else if (c.FEC == 34)  ss << "3/4";
-	        else if (c.FEC == 45)  ss << "4/5";
-	        else if (c.FEC == 56)  ss << "5/6";
-	        else if (c.FEC == 67)  ss << "6/7";
-	        else if (c.FEC == 78)  ss << "7/8";
-	        else if (c.FEC == 89)  ss << "8/9";
-	        else if (c.FEC == 35)  ss << "3/5";
-	        else if (c.FEC == 910) ss << "9/10";
-	        else if (c.FEC == 25)  ss << "2/5";
-	        else if (c.FEC == 14)  ss << "1/4";
-	        else if (c.FEC == 13)  ss << "1/3";
-           else                   ss << "-1";
-           ss << "</vlc:option>" << std::endl;
-           }
-        if (c.DelSys == 1) {
-           if (c.StreamId  != 999)
-              ss << INDENT << "<vlc:option>" << "dvb-plp-id=" << c.StreamId << "</vlc:option>" << std::endl;
-           ss << INDENT << "<vlc:option>" << "dvb-modulation=";
-	        if (c.Modulation == 2)       ss << "QPSK";
-	        else if (c.Modulation == 5)  ss << "8PSK";
-	        else if (c.Modulation == 6)  ss << "16APSK";
-	        else if (c.Modulation == 7)  ss << "32APSK";
-           else if (c.Modulation == 12) ss << "DQPSK";
-           else                         ss << "AUTO";
-           ss << "</vlc:option>" << std::endl;
-
-           ss << INDENT << "<vlc:option>" << "dvb-rolloff=";
-           if (c.Rolloff == 20)         ss << 20;
-           else if (c.Rolloff == 25)    ss << 25;
-           else                         ss << 35;
-           ss << "</vlc:option>" << std::endl;
-           }
-
-        int h,l,s;
-        GetLnb(l, h, s);
-        ss << INDENT << "<vlc:option>" << "dvb-lnb-low="    << l << "</vlc:option>" << std::endl;
-        ss << INDENT << "<vlc:option>" << "dvb-lnb-high="   << h << "</vlc:option>" << std::endl;
-        ss << INDENT << "<vlc:option>" << "dvb-lnb-switch=" << s << "</vlc:option>" << std::endl;
-
-        if (DiseqcSwitchPosition() != -1)
-           ss << INDENT << "<vlc:option>" << "dvb-satno=" << DiseqcSwitchPosition() << "</vlc:option>" << std::endl;
-
-        indent--;
-        ss << INDENT << "</extension>" << std::endl;
-        }
-
-     TitleNumber++;
-     indent--;
-     ss << INDENT << "</track>" << std::endl;
-     } // end for()
-
-  indent--;
-  ss << INDENT << "</trackList>" << std::endl;
-
-  indent--;
-  ss << INDENT << "</playlist>" << std::endl;
-
-  OutputLine(ss.str());
-}
-
-
-/*******************************************************************************
- * VLC satip output
- ******************************************************************************/
-
-void PrintVLCsatip(std::vector<TChannel>& List) {
-  std::stringstream ss;
-  size_t indent = 0;
-  int src = 1;
-  cSource* source = Sources.First();
-  if (source && source->Description())
-      src = strtol(source->Description(), NULL, 0);
-  if (src < 1 || src > 255)
-      src = 1;
-
-  ss << INDENT << "<?xml"
-     << " version="  << '"' << "1.0"   << '"'
-     << " encoding=" << '"' << "UTF-8" << '"'
-     << "?>" << std::endl;
-
-  ss << INDENT << "<playlist"
-     << " version="   << '"' << "1" << '"'
-     << " xmlns="     << '"' << "http://xspf.org/ns/0/" << '"'
-     << " xmlns:vlc=" << '"' << "http://www.videolan.org/vlc/playlist/ns/0/" << '"'
-     << '>' << std::endl;
-  indent++;
-
-  ss << INDENT << "<title>DVB Playlist</title>" << std::endl;
-  ss << INDENT << "<creator>w_scan_cpp</creator>" << std::endl;
-  ss << INDENT << "<info>https://gen2vdr.de/wirbel/w_scan_cpp/index2.html</info>" << std::endl;
-  ss << INDENT << "<trackList>" << std::endl;
-  indent++;
-
-  const char* AppUrl = "http://www.videolan.org/vlc/playlist/0";
-  size_t TitleNumber = 1;
-
-  for(auto c:UniqueChannels(List)) {
-     ss << INDENT << "<track>" << std::endl;
-     indent++;
-
-     if (c.LCN != -1)
-        TitleNumber = c.LCN;
-     ss << INDENT << "<trackNum>" << IntToStr(TitleNumber);
-     if (c.Source == "A" and c.LCN_minor != -1)
-        ss << "." << c.LCN_minor;
-     ss << "</trackNum>" << std::endl;
-
-     std::string title;
-     if (not c.Name.empty()) {
-        title = c.Name;
-        XmlString(title);
-        }
-     else
-        title += ". Channel";
-     ss << INDENT << "<title>" << title << "</title>" << std::endl;
-
-     uint32_t freq_Hz;
-     double freq_MHz;
-
-     freq_Hz = c.Frequency;
-     freq_MHz = c.Frequency;     
-     while(freq_Hz && (freq_Hz < 1000000)) freq_Hz *= 1000;
-     while(freq_MHz && (freq_MHz > 1000.0)) freq_MHz /= 1000.0;
-
-     ss << INDENT << "<location>rtsp://" << WirbelscanSetup.SatipAddr << "/?";
-
-     if (c.Source == "A") {
-        ErrorMessage("ATSC is not yet supported in SAT>IP");
-        return;
-        }
-     if (c.Source == "C") {
-        ss << "freq=" << freq_MHz;
-        ss << "&amp;msys=dvbc";
-        if (c.DelSys == 0) {
-	        if (c.Modulation == 16)         ss << "&amp;mtype=16qam";
-	        else if (c.Modulation == 32)    ss << "&amp;mtype=32qam";
-	        else if (c.Modulation == 64)    ss << "&amp;mtype=64qam";
-	        else if (c.Modulation == 128)   ss << "&amp;mtype=128qam";
-	        else if (c.Modulation == 256)   ss << "&amp;mtype=256qam";
-
+           ss << "src=" << src;
+           ss << "&amp;freq=" << c.Frequency;
+           ss << "&amp;pol=" << (char) std::tolower((unsigned char) c.Polarization);
            ss << "&amp;sr=" << c.Symbolrate;
 
-           if (c.Inversion != 999)
-              ss << "&amp;specinv=" << c.Inversion;
+           if (c.FEC == 12)       ss << "&amp;fec=12";
+           else if (c.FEC == 23)  ss << "&amp;fec=23";
+           else if (c.FEC == 34)  ss << "&amp;fec=34";
+           else if (c.FEC == 56)  ss << "&amp;fec=56";
+           else if (c.FEC == 78)  ss << "&amp;fec=78";
+           else if (c.FEC == 89)  ss << "&amp;fec=89";
+           else if (c.FEC == 35)  ss << "&amp;fec=35";
+           else if (c.FEC == 45)  ss << "&amp;fec=45";
+           else if (c.FEC == 910) ss << "&amp;fec=910";
+
+           if (c.DelSys == 0) {
+              ss << "&amp;ro=0.35&amp;msys=dvbs&amp;mtype=qpsk&amp;plts=off";
+              }
+           else {
+              if (c.Rolloff == 20)      ss << "&amp;ro=0.20";
+              else if (c.Rolloff == 25) ss << "&amp;ro=0.25";
+              else                      ss << "&amp;ro=0.35";
+
+              ss << "&amp;msys=dvbs2";
+
+	           if (c.Modulation == 2)       ss << "&amp;mtype=qpsk";
+	           else if (c.Modulation == 5)  ss << "&amp;mtype=8psk";
+
+	           if (c.Pilot == 0) ss << "&amp;plts=off";
+	           else              ss << "&amp;plts=on";
+              }
            }
-        else {
-           ss << "2"; // DVB-C2
 
-           int bw = c.Bandwidth;
-           while(bw > 999) bw = round(bw/1000.0);
-
-           if (bw != 999)
-              ss << "&amp;bw=" << bw;
-           if (c.StreamId != 999)
-              ss << "&amp;plp=" << c.StreamId;
-           }
-
+        ss << "&amp;pids=0,16,17,18";
+        if (c.PMT > 0)                        ss << ',' << c.PMT;
+        if (c.VPID.PID > 0)                   ss << ',' << c.VPID.PID;
+        for (int i=0; i<c.APIDs.Count(); i++) ss << ',' << c.APIDs[i].PID;
+        for (int i=0; i<c.DPIDs.Count(); i++) ss << ',' << c.DPIDs[i].PID;
+        for (int i=0; i<c.SPIDs.Count(); i++) ss << ',' << c.SPIDs[i].PID;
+        if (c.TPID > 0)                       ss << ',' << c.TPID;
+        ss << "</location>" << std::endl;
         }
-     if (c.Source == "T") {
-        ss << "freq=" << freq_MHz;
-
-        double bw = c.Bandwidth;
-        while(bw >= 1000.0) bw /= 1000.0;
-        ss << "&amp;bw=" << bw;
-
-        if      (c.Transmission == 2)  ss << "&amp;tmode=2k";
-        else if (c.Transmission == 4)  ss << "&amp;tmode=4k";
-        else if (c.Transmission == 8)  ss << "&amp;tmode=8k";
-        else if (c.Transmission == 1)  ss << "&amp;tmode=1k";
-        else if (c.Transmission == 16) ss << "&amp;tmode=16k";
-        else if (c.Transmission == 32) ss << "&amp;tmode=32k";
-
-        if (c.Modulation == 2)        ss << "&amp;mtype=qpsk";
-        else if (c.Modulation == 16)  ss << "&amp;mtype=16qam";
-        else if (c.Modulation == 64)  ss << "&amp;mtype=64qam";
-        else if (c.Modulation == 256) ss << "&amp;mtype=256qam";
-
-        if (c.Guard == 4)             ss << "&amp;gi=14";
-        else if (c.Guard == 8)        ss << "&amp;gi=18";
-        else if (c.Guard == 16)       ss << "&amp;gi=116";
-        else if (c.Guard == 32)       ss << "&amp;gi=132";
-        else if (c.Guard == 128)      ss << "&amp;gi=1128";
-        else if (c.Guard == 19128)    ss << "&amp;gi=19128";
-        else if (c.Guard == 19256)    ss << "&amp;gi=19256";
-
-        if (c.FEC == 12)         ss << "&amp;fec=12";
-        else if (c.FEC == 35)    ss << "&amp;fec=35";
-        else if (c.FEC == 23)    ss << "&amp;fec=23";
-        else if (c.FEC == 34)    ss << "&amp;fec=34";
-        else if (c.FEC == 45)    ss << "&amp;fec=45";
-        else if (c.FEC == 56)    ss << "&amp;fec=56";
-        else if (c.FEC == 78)    ss << "&amp;fec=78";
-
-        if (c.DelSys == 0) {
-           ss << "&amp;msys=dvbt";
-           }
-        else {
-           ss << "&amp;msys=dvbt2";
-           ss << "&amp;plp=" << c.StreamId;
-           ss << "&amp;t2id=" << c.SystemId;
-           ss << "&amp;sm=" << c.MISO;
-           }        
-        }
-     if (c.Source.find('S') == 0) {
-        ss << "src=" << src;
-        ss << "&amp;freq=" << c.Frequency;
-        ss << "&amp;pol=" << (char) std::tolower((unsigned char) c.Polarization);
-        ss << "&amp;sr=" << c.Symbolrate;
-
-        if (c.FEC == 12)       ss << "&amp;fec=12";
-        else if (c.FEC == 23)  ss << "&amp;fec=23";
-        else if (c.FEC == 34)  ss << "&amp;fec=34";
-        else if (c.FEC == 56)  ss << "&amp;fec=56";
-        else if (c.FEC == 78)  ss << "&amp;fec=78";
-        else if (c.FEC == 89)  ss << "&amp;fec=89";
-        else if (c.FEC == 35)  ss << "&amp;fec=35";
-        else if (c.FEC == 45)  ss << "&amp;fec=45";
-        else if (c.FEC == 910) ss << "&amp;fec=910";
-
-        if (c.DelSys == 0) {
-           ss << "&amp;ro=0.35&amp;msys=dvbs&amp;mtype=qpsk&amp;plts=off";
-           }
-        else {
-           if (c.Rolloff == 20)      ss << "&amp;ro=0.20";
-           else if (c.Rolloff == 25) ss << "&amp;ro=0.25";
-           else                      ss << "&amp;ro=0.35";
-
-           ss << "&amp;msys=dvbs2";
-
-	        if (c.Modulation == 2)       ss << "&amp;mtype=qpsk";
-	        else if (c.Modulation == 5)  ss << "&amp;mtype=8psk";
-
-	        if (c.Pilot == 0) ss << "&amp;plts=off";
-	        else              ss << "&amp;plts=on";
-           }
-        }
-
-     ss << "&amp;pids=0,16,17,18";
-     if (c.PMT > 0)                        ss << ',' << c.PMT;
-     if (c.VPID.PID > 0)                   ss << ',' << c.VPID.PID;
-     for (int i=0; i<c.APIDs.Count(); i++) ss << ',' << c.APIDs[i].PID;
-     for (int i=0; i<c.DPIDs.Count(); i++) ss << ',' << c.DPIDs[i].PID;
-     for (int i=0; i<c.SPIDs.Count(); i++) ss << ',' << c.SPIDs[i].PID;
-     if (c.TPID > 0)                       ss << ',' << c.TPID;
-     ss << "</location>" << std::endl;
 
      ss << INDENT << "<extension application=" << '"' << AppUrl << '"' << ">" << std::endl;
      indent++;
-
      ss << INDENT << "<vlc:id>" << TitleNumber;
      if (c.Source == "A" and c.LCN_minor != -1)
         ss << "." << c.LCN_minor;
      ss << "</vlc:id>" << std::endl;
 
      if (c.LCN != -1) {
-         ss << INDENT << "<vlc:option>" << "logical-channel-number=" << c.LCN << "</vlc:option>" << std::endl;
-         if (c.Source == "A" and c.LCN_minor != -1)
-            ss << INDENT << "<vlc:option>" << "logical-channel-number-minor=" << c.LCN_minor << "</vlc:option>" << std::endl;
-         }
+        ss << INDENT << "<vlc:option>"
+           << "logical-channel-number=" << c.LCN
+           << "</vlc:option>" << std::endl;
+        if (c.Source == "A" and c.LCN_minor != -1)
+           ss << INDENT << "<vlc:option>"
+              << "logical-channel-number-minor=" << c.LCN_minor
+              << "</vlc:option>" << std::endl;
+        }
+
+     if (not Satip) {
+        ss << INDENT << "<vlc:option>" << "dvb-ts-id=" << c.TID << "</vlc:option>" << std::endl;
+        ss << INDENT << "<vlc:option>" << "program="   << c.SID << "</vlc:option>" << std::endl;
+
+        if (c.Source == "A") {
+           if (c.Modulation != 999) {
+              ss << INDENT << "<vlc:option>dvb-modulation=";
+	           if (c.Modulation == 10)         ss << "8VSB";
+	           else if (c.Modulation == 11)    ss << "16VSB";
+	           else if (c.Modulation == 64)    ss << "64QAM"; // may be unused at all.
+	           else if (c.Modulation == 256)   ss << "256QAM";
+              else                                 ss << "AUTO";
+              ss << "</vlc:option>" << std::endl;
+              }
+           }
+        if (c.Source == "C") {
+           ss << INDENT << "<vlc:option>" << "dvb-srate=" << c.Symbolrate*1000 << "</vlc:option>" << std::endl;
+
+           if (c.Modulation != 999) {
+              ss << INDENT << "<vlc:option>" << "dvb-modulation=";
+   	        if (c.Modulation == 32)         ss << "32QAM";
+	           else if (c.Modulation == 64)    ss << "64QAM";
+	           else if (c.Modulation == 128)   ss << "128QAM";
+	           else if (c.Modulation == 256)   ss << "256QAM";
+              else                            ss << "AUTO";
+              ss << "</vlc:option>" << std::endl;
+              }
+           if (c.Inversion != 999) {
+              ss << INDENT << "<vlc:option>" << "dvb-inversion=" << c.Inversion << "</vlc:option>" << std::endl;
+              }
+           }
+        if (c.Source == "T") {
+           int bw = c.Bandwidth;
+           while(bw > 999) bw = round(bw/1000.0);
+
+           ss << INDENT << "<vlc:option>" << "dvb-bandwidth=" << bw    << "</vlc:option>" << std::endl;
+
+           if (c.Inversion != 999)
+              ss << INDENT << "<vlc:option>dvb-inversion=" << c.Inversion << "</vlc:option>" << std::endl;
+           if (c.FEC != 999) {
+              ss << INDENT << "<vlc:option>dvb-code-rate-hp=";
+	           if (c.FEC == 12)         ss << "1/2";
+	           else if (c.FEC == 23)    ss << "2/3";
+	           else if (c.FEC == 34)    ss << "3/4";
+	           else if (c.FEC == 45)    ss << "4/5";
+	           else if (c.FEC == 56)    ss << "5/6";
+	           else if (c.FEC == 67)    ss << "6/7";
+	           else if (c.FEC == 78)    ss << "7/8";
+	           else if (c.FEC == 35)    ss << "3/5";
+	           else if (c.FEC == 89)    ss << "8/9";
+	           else if (c.FEC == 910)   ss << "9/10";
+	           else if (c.FEC == 25)    ss << "2/5";
+	           else if (c.FEC == 14)    ss << "1/4";
+	           else if (c.FEC == 13)    ss << "1/3";
+              else                     ss << "-1";
+              ss << "</vlc:option>" << std::endl;
+              }
+           if (c.Modulation != 999) {
+              ss << INDENT << "<vlc:option>" << "dvb-modulation=";
+	           if (c.Modulation == 2)        ss << "QPSK";
+	           else if (c.Modulation == 16)  ss << "16QAM";
+	           else if (c.Modulation == 64)  ss << "64QAM";
+	           else if (c.Modulation == 256) ss << "256QAM";
+              else                          ss << "AUTO";
+              ss << "</vlc:option>" << std::endl;
+              }
+           if (c.Transmission != 999)
+              ss << INDENT << "<vlc:option>" << "dvb-transmission=" << c.Transmission << "</vlc:option>" << std::endl;
+           if (c.Guard != 999) {
+              ss << INDENT << "<vlc:option>" << "dvb-guard=";
+	           if (c.Guard == 4)             ss << "1/4";
+	           else if (c.Guard == 8)        ss << "1/8";
+	           else if (c.Guard == 16)       ss << "1/16";
+	           else if (c.Guard == 32)       ss << "1/32";
+	           else if (c.Guard == 128)      ss << "1/128";
+	           else if (c.Guard == 19128)    ss << "19/128";
+	           else if (c.Guard == 19256)    ss << "19/256";
+              else                          ss << "AUTO";
+              ss << "</vlc:option>" << std::endl;
+              }
+           if (c.DelSys == 1) {
+              if (c.StreamId  != 999)
+                 ss << INDENT << "<vlc:option>" << "dvb-plp-id=" << c.StreamId << "</vlc:option>" << std::endl;
+              }
+           }
+        if (c.Source.find('S') == 0) {
+           ss << INDENT << "<vlc:option>" << "dvb-polarization=" << c.Polarization << "</vlc:option>" << std::endl;
+           ss << INDENT << "<vlc:option>" << "dvb-srate="        << c.Symbolrate*1000 << "</vlc:option>" << std::endl;
+           if (c.Inversion    != 999)
+              ss << INDENT << "<vlc:option>dvb-inversion=" << c.Inversion << "</vlc:option>" << std::endl;
+           if (c.FEC          != 999) {
+              ss << INDENT << "<vlc:option>dvb-fec=";
+	           if (c.FEC == 12)       ss << "1/2";
+	           else if (c.FEC == 23)  ss << "2/3";
+	           else if (c.FEC == 34)  ss << "3/4";
+	           else if (c.FEC == 45)  ss << "4/5";
+	           else if (c.FEC == 56)  ss << "5/6";
+	           else if (c.FEC == 67)  ss << "6/7";
+	           else if (c.FEC == 78)  ss << "7/8";
+	           else if (c.FEC == 89)  ss << "8/9";
+	           else if (c.FEC == 35)  ss << "3/5";
+	           else if (c.FEC == 910) ss << "9/10";
+	           else if (c.FEC == 25)  ss << "2/5";
+	           else if (c.FEC == 14)  ss << "1/4";
+	           else if (c.FEC == 13)  ss << "1/3";
+              else                   ss << "-1";
+              ss << "</vlc:option>" << std::endl;
+              }
+           if (c.DelSys == 1) {
+              if (c.StreamId  != 999)
+                 ss << INDENT << "<vlc:option>" << "dvb-plp-id=" << c.StreamId << "</vlc:option>" << std::endl;
+              ss << INDENT << "<vlc:option>" << "dvb-modulation=";
+	           if (c.Modulation == 2)       ss << "QPSK";
+	           else if (c.Modulation == 5)  ss << "8PSK";
+	           else if (c.Modulation == 6)  ss << "16APSK";
+	           else if (c.Modulation == 7)  ss << "32APSK";
+              else if (c.Modulation == 12) ss << "DQPSK";
+              else                         ss << "AUTO";
+              ss << "</vlc:option>" << std::endl;
+
+              ss << INDENT << "<vlc:option>" << "dvb-rolloff=";
+              if (c.Rolloff == 20)         ss << 20;
+              else if (c.Rolloff == 25)    ss << 25;
+              else                         ss << 35;
+              ss << "</vlc:option>" << std::endl;
+              }
+
+           int h,l,s;
+           GetLnb(l, h, s);
+           ss << INDENT << "<vlc:option>" << "dvb-lnb-low="    << l << "</vlc:option>" << std::endl;
+           ss << INDENT << "<vlc:option>" << "dvb-lnb-high="   << h << "</vlc:option>" << std::endl;
+           ss << INDENT << "<vlc:option>" << "dvb-lnb-switch=" << s << "</vlc:option>" << std::endl;
+
+           if (DiseqcSwitchPosition() != -1)
+              ss << INDENT << "<vlc:option>" << "dvb-satno=" << DiseqcSwitchPosition() << "</vlc:option>" << std::endl;
+
+           }
+        }
 
      indent--;
      ss << INDENT << "</extension>" << std::endl;
 
+     TitleNumber++;
      indent--;
      ss << INDENT << "</track>" << std::endl;
-     TitleNumber++;
      } // end for()
 
   indent--;

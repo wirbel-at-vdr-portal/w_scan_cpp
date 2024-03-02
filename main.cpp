@@ -162,8 +162,8 @@ int main(int argc, char* argv[]) {
 
      if      (OutputFormat == "VDR")            PrintVDR(data);
      else if (OutputFormat == "INI")            PrintIni(data);
-     else if (OutputFormat == "VLC")            PrintVLC(data);
-     else if (OutputFormat == "VLC_SAT>IP")     PrintVLCsatip(data);
+     else if (OutputFormat == "VLC")            PrintVLC(data, false);
+     else if (OutputFormat == "VLC_SAT>IP")     PrintVLC(data, true);
      else if (OutputFormat == "XINE")           PrintXine(data);
      else if (OutputFormat == "MPLAYER")        PrintXine(data, true);
      else if (OutputFormat == "INITIAL")        PrintInitial(data);
