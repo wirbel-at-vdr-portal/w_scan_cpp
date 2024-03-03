@@ -765,6 +765,7 @@ void PrintVLC(std::vector<TChannel>& List, bool Satip) {
   ss << INDENT << "<title>DVB Playlist</title>" << std::endl;
   ss << INDENT << "<creator>w_scan_cpp</creator>" << std::endl;
   ss << INDENT << "<info>https://gen2vdr.de/wirbel/w_scan_cpp/index2.html</info>" << std::endl;
+  ss << INDENT << "<date>" << ISO8601Date(time(nullptr)) << "</date>" << std::endl;
   ss << INDENT << "<trackList>" << std::endl;
   indent++;
 
