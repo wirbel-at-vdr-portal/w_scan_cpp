@@ -191,3 +191,5 @@
 * include all service pids in the VLC SAT>IP output
 * PrintIni(): replace localtime() by TimeStr()
 * PrintInitial(): replace localtime() by TimeStr()
+* merged VLC output formats
+
