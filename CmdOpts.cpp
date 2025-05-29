@@ -435,8 +435,10 @@ bool ParseArguments(int argc, char* argv[]) {
            DiseqcScr(Source, Setup.LnbFrequLo, Setup.LnbFrequHi, Setup.LnbSLOF, Scr);
         else if (RotorPosition != 9999)
            DiseqcRotorPosition(Source, Setup.LnbFrequLo, Setup.LnbFrequHi, Setup.LnbSLOF, RotorPosition);
-        else if (not RotorUsals.empty())
+        else if (not RotorUsals.empty()) {
+           new cDiseqcPositioner;
            DiseqcRotorUsals(Setup.LnbFrequLo, Setup.LnbFrequHi, Setup.LnbSLOF, RotorUsals);
+           }
 
         break;
         }
