@@ -361,6 +361,7 @@ bool ParseArguments(int argc, char* argv[]) {
               return false;
               }
         RotorUsals = Param;
+        Setup.UsePositioner = 1;
         i++;
         }
      else if ((Argument == "-u") or (Argument == "--scr")) {
