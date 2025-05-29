@@ -356,7 +356,7 @@ bool ParseArguments(int argc, char* argv[]) {
            return false;
            }
         for(auto s:l)
-           if (s.empty() or (s.find_first_not_of("0123456789") != std::string::npos)) {
+           if (s.empty() or (s.find_first_not_of("-0123456789") != std::string::npos)) {
               ErrorMessage("invalid parameter '" + s + "': -> not integer");
               return false;
               }
