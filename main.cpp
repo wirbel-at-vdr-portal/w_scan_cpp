@@ -177,4 +177,6 @@ int main(int argc, char* argv[]) {
      l->Plugin()->Stop();
 
   UnloadLibraries();
+  if (cPositioner::GetPositioner())
+     cPositioner::DestroyPositioner();
 }
