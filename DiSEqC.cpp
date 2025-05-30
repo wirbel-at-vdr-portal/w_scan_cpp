@@ -96,7 +96,7 @@ void DiseqcRotorUsals(int LnbLo, int LnbHi, int LnbSLOF, std::string Params) {
   int item = 0;
 
   for(auto s:SplitStr(Params,':')) {
-     if (s.empty() or (s.find_first_not_of("0123456789") != std::string::npos)) {
+     if (s.empty() or (s.find_first_not_of("-0123456789") != std::string::npos)) {
         std::cerr << "invalid USALS data" << std::endl;
         return;
         }
