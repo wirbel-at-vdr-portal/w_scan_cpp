@@ -179,7 +179,7 @@
      in statemachine.cpp (less memory required)
    * detach aReceiver from dev, before deleting it
 
-2023xxxx:
+20240915:
 -------------------------------------------------------------------------------
 * fix VLC output for Sat, VLC changed from MHz to Hz
 * add fix for w_scan XML output from Christoph Heitkamp
@@ -192,4 +192,13 @@
 * PrintIni(): replace localtime() by TimeStr()
 * PrintInitial(): replace localtime() by TimeStr()
 * merged VLC output formats
+* fix FTBC on wirbelscan plugin due to vdr changes -> bump wirbelscan version
+
+20250615:
+-------------------------------------------------------------------------------
+* update wirbelscan
+* rotor usals:
+  - add missing cDiseqcPositioner
+  - {Lat,Long} might be negative
+  - DiseqcRotorUsals() needs to accept negtive values.
 
